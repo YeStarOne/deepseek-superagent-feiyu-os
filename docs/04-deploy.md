@@ -55,6 +55,9 @@
 ### 05 · 聊天线接线
 - **装什么**：平台插件（反向 WS → 会话）、人设卡模板、`AGENTS.md` 模板。
 - **配置**：`templates/` 里的干净示例人设，**不要**用真实人设卡。
+  - 完整人设卡骨架（规矩段 / 称呼与称谓 / 三类主动管道 / 亲密度条款 + 每节机制注）：[`templates/AGENTS.md`](../templates/AGENTS.md)
+  - 只做人设的短版（soul / system 段注入）：[`templates/persona.md`](../templates/persona.md)
+  - 项目治理用的 `AGENTS.md`（席位、边界、红线）：[`templates/project-AGENTS.md`](../templates/project-AGENTS.md)
 - **验收**：发一条消息，收到回复；回合中插入第二条消息也能收到。
 - **回滚**：停插件、切回上一份 session 配置。
 
