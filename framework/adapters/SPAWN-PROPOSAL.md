@@ -1,6 +1,7 @@
-# Feature Request 草案：`spawn` 原语——让 harness 能程序化开新会话
+# Feature Request：`spawn` 原语——让 harness 能程序化开新会话
 
-> 状态：草案（待提交给 harness 官方）。动机与一线证据来自我们 7×24 生产运转的多会话团队。
+> 状态：**已提交官方** —— [zai-org/zcode-plugins#178](https://github.com/zai-org/zcode-plugins/issues/178)（ZCode 主仓 issues/discussions 均关闭，插件市场仓为官方社区入口，标题注明 harness 提案请转交核心组）。
+> 动机与一线证据来自我们 7×24 生产运转的多会话团队。
 
 ## 一句话
 
