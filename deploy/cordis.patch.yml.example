@@ -1,32 +1,463 @@
-# cordis.patch.yml 示例（字段以你安装的版本为准；本文件只给结构与安全默认值）
-# 真值不进仓：复制后填 @PLACEHOLDER@，并在热装前备份副本（热装会覆盖副本）。
+# cordis.patch.yml.example — dsh profile 补丁层（示例）
+#
+# ⚠️ 先看结构：本文件是 **YAML 数组**，每项一个 loader patch 条目。
+#    不是"一个配置对象"。写成 `key: value` 的映射会被当成非法补丁。
+#
+# 它插在哪：profile 目录里的 cordis.yml 只是一个空数组 `[]`，真正决定
+# "挂哪些插件、每个插件什么配置"的是三层按顺序叠加：
+#   ① package.json 的 dsh.profile.bundles（bundle 自带层）
+#   ② 本文件 cordis.patch.yml（你的补丁层，最后应用）
+#   ③ 命令行 --patch overlay（可选）
+# 改配置只改本文件；cordis.yml 保持 `[]` 不要动。
+#
+# 只有三种动作：
+#   1) 按 id 覆盖已有条目   { id, name?, config?, disabled? }
+#   2) 关掉某个条目         { id, disabled: true }
+#   3) 追加新条目           { insert: [ ...同结构... ] }
+# 按 id 匹配与合并（不按位置），所以"顶层覆盖"对已存在的行生效。
+# `!!js` 表达式允许，按平台求值（见 §4 的跨平台 bash/pwsh 二选一）。
+#
+# 生效时机：**启动时读一次**。改完必须重启 dsh。
+# 热装器管的是 bundle 副本，不管本文件——所以"热装成功了但配置没变"不是热装坏了。
+#
+# 关于占位符 ${...}：它们是**待填标记**，不是运行时变量展开，dsh 不会展开它们。
+# 复制成 cordis.patch.yml 后逐项填真值；凭据一律不写值，用
+# `apiKeyEnv` / `*ApiKeyEnv` 指向环境变量，值只放在 .env。
+# 填好的真值文件永不进仓；升级/热装会覆盖 profile 副本，先备份。
 
-agent-default-model: "@MODEL_MAIN@"
-agent-fallback-model: "@MODEL_FALLBACK@"
 
-# 先观察，不自动执行。切 auto 前必须先跑 observe 窗口并留痕（见 docs/03-cases/02）。
-eval:
-  mode: observe          # observe | auto
-  max-workers: 1
+# ── 1. 打开 bundle 默认禁用的工具 ─────────────────────────────────────────────
+# ⚠️ 坑：dsh-base 默认把 plugin-manager / plugin-market 两个工具禁用。
+# 顶层覆盖对所有 preset 生效；但 preset 内嵌行也各自禁了一份、按 id 合并，
+# 所以还要在 insert 里再写一次，preset 层才真的放开。
+- id: tool-plugin-manager
+  name: "@deepseek-ai/dsh-plugin-manager/tools"
+  disabled: false
+- id: tool-plugin-market
+  name: "@deepseek-ai/dsh-plugin-market/tools"
+  disabled: false
+- insert:
+    - id: tool-plugin-manager
+      name: "@deepseek-ai/dsh-plugin-manager/tools"
+      disabled: false
+    - id: tool-plugin-market
+      name: "@deepseek-ai/dsh-plugin-market/tools"
+      disabled: false
 
-# worker 首条消息模板：决定它以什么身份、什么口吻开始干活
-executor:
-  prepare: "@WORKSPACE@/scripts/prepare-worker.sh"
-  max-workers: 1
 
-# 来源：一个玩具源 + 你自己的工作源
-sources:
-  - id: weather
-    kind: example
+# ── 2. 轻装 preset：主对话只闲聊，重活交子代理 ────────────────────────────────
+# 目的：主对话不带 bash/fs/搜索工具 → 闲聊轮次 step 降到 1、上下文更小 → 首 token 更快。
+# 重活一律 subagent 派给 full-access 子代理（§4）。
+- insert:
+    - id: preset-chat
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: chat
+        order: 3
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: You are a coding agent powered by the {{model}} model.
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          - id: time-context
+            name: '@deepseek-ai/dsh-time-context'
+          # 保留：任务/待办/提问/呈现 —— 轻量、无文件系统副作用
+          - id: tool-jobs
+            name: '@deepseek-ai/dsh-tool-jobs'
+          - id: command-goal
+            name: '@deepseek-ai/dsh-command-goal'
+          - id: tool-goal
+            name: '@deepseek-ai/dsh-tool-goal'
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'
+            config:
+              allowParallelInProgress: true
+          - id: present
+            name: '@deepseek-ai/dsh-tool-present'
+          # ⚠️ 坑：建 preset 时漏掉压缩组，后果是上下文涨到十几万 token 却从不压缩
+          # （会话日志里零 compaction/* 事件），每轮回复几十秒。压缩组必须跟着 preset 走。
+          - id: compaction
+            name: cordis:group
+            group: true
+            isolate:
+              compaction: true
+              toolResultPruner: true
+            config:
+              - id: compaction-basic
+                name: '@deepseek-ai/dsh-compaction-basic'
+              - id: command-compact
+                name: '@deepseek-ai/dsh-command-compact'
+              - id: tool-result-pruner
+                name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+                config:
+                  thresholdChars: 8192
+                  headChars: 4096
+                  tailChars: 1024
+          # 委派组：子代理默认走 full-access
+          - id: delegation
+            name: cordis:group
+            group: true
+            isolate:
+              workflowEngine: true
+            config:
+              - id: tool-subagent-control
+                name: '@deepseek-ai/dsh-tool-subagent-control'
+              - id: tool-subagent-list-agents
+                name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
+              - id: tool-subagent
+                name: '@deepseek-ai/dsh-tool-subagent'
+                config:
+                  provider: spawn
+                  toolName: subagent
+                  agentPreset: full-access
+                  modelSelectionSettings: true
+              - id: workflow-ptc
+                name: '@deepseek-ai/dsh-workflow-ptc'
+                config:
+                  provider: spawn
+              - id: tool-workflow
+                name: '@deepseek-ai/dsh-tool-workflow'
+          # 刻意不放：tool-bash / tool-fs / tool-fs-search / tool-web / skill / plan-mode
+          # （bash、grep、read、write、edit 全在这里 —— 闲聊不碰文件系统）
+
+
+# ── 3. 顶层兜底压缩 ───────────────────────────────────────────────────────────
+# ⚠️⚠️ 坑：会话一旦创建就**记住自己的 agentPreset**，改 §5 的 default 只影响新会话。
+# 现存会话若绑在一个不含压缩组的 preset 上，会一直不压缩。顶层再挂一份兜底：
+# 无论会话用哪个 preset，压缩都在。
+- id: compaction
+  name: cordis:group
+  group: true
+  isolate:
+    compaction: true
+    toolResultPruner: true
+  config:
+    - id: compaction-basic
+      name: '@deepseek-ai/dsh-compaction-basic'
+    - id: command-compact
+      name: '@deepseek-ai/dsh-command-compact'
+    - id: tool-result-pruner
+      name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+      config:
+        thresholdChars: 8192
+        headChars: 4096
+        tailChars: 1024
+
+
+# ── 4. full-access preset：工具全集 + 放开插件自装 ────────────────────────────
+# 自建而不是改内置：preset 内嵌行无法被顶层 patch 覆盖，索性照抄一份另起 id。
+- id: preset-full-access
+  name: '@deepseek-ai/dsh-agent-preset'
+  config:
+    id: full-access
+    order: 4
+    plugins:
+      - id: persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: You are a coding agent powered by the {{model}} model.
+      - id: agent-instructions
+        name: '@deepseek-ai/dsh-agent-instructions'
+        config:
+          maxBytes: 65536
+      - id: time-context
+        name: '@deepseek-ai/dsh-time-context'
+      # 跨平台二选一：!!js 在平台侧求值，不是 YAML 布尔
+      - id: tool-bash
+        name: '@deepseek-ai/dsh-tool-bash'
+        disabled: !!js process.platform === 'win32'
+      - id: tool-pwsh
+        name: '@deepseek-ai/dsh-tool-pwsh'
+        disabled: !!js process.platform !== 'win32'
+      - id: tool-fs
+        name: '@deepseek-ai/dsh-tool-fs'
+      - id: tool-fs-search
+        name: '@deepseek-ai/dsh-tool-fs-search'
+        config:
+          sampleOverCapGlobResults: false
+      - id: tool-jobs
+        name: '@deepseek-ai/dsh-tool-jobs'
+      - id: tool-schedule
+        name: '@deepseek-ai/dsh-tool-schedule'
+      - id: skill-filesystem
+        name: '@deepseek-ai/dsh-skill-filesystem'
+      - id: tool-skill
+        name: '@deepseek-ai/dsh-tool-skill'
+      - id: tool-web
+        name: '@deepseek-ai/dsh-tool-web'
+        config:
+          fetch: true
+          searchTimeoutMs: 60000
+      - id: compaction
+        name: cordis:group
+        group: true
+        isolate:
+          compaction: true
+          toolResultPruner: true
+        config:
+          - id: compaction-basic
+            name: '@deepseek-ai/dsh-compaction-basic'
+          - id: command-compact
+            name: '@deepseek-ai/dsh-command-compact'
+          - id: tool-result-pruner
+            name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+      - id: delegation
+        name: cordis:group
+        group: true
+        isolate:
+          workflowEngine: true
+        config:
+          - id: tool-subagent-control
+            name: '@deepseek-ai/dsh-tool-subagent-control'
+          - id: tool-subagent-list-agents
+            name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
+          - id: tool-subagent
+            name: '@deepseek-ai/dsh-tool-subagent'
+            config:
+              provider: spawn
+              toolName: subagent
+              modelSelectionSettings: true
+          - id: tool-subagent-fork
+            name: '@deepseek-ai/dsh-tool-subagent'
+            config:
+              provider: fork
+              toolName: subagent_fork
+          - id: workflow-ptc
+            name: '@deepseek-ai/dsh-workflow-ptc'
+            config:
+              provider: spawn
+          - id: tool-workflow
+            name: '@deepseek-ai/dsh-tool-workflow'
+      - id: tool-plugin-manager
+        name: '@deepseek-ai/dsh-plugin-manager/tools'
+      - id: tool-plugin-market
+        name: '@deepseek-ai/dsh-plugin-market/tools'
+
+
+# ── 5. 默认 agent preset ──────────────────────────────────────────────────────
+- id: agent-preset-registry
+  name: "@deepseek-ai/dsh-agent-preset-registry"
+  config:
+    # ⚠️⚠️ 坑：这里必须是 dsh **registry 认的** id。填自建 id（chat / full-access）时，
+    # 新会话会拿到 agentPreset=null → 只挂插件工具、丢掉核心工具集
+    # （read_image / bash / read / write…），表现为"看不了图"、工具数明显变少。
+    # 内置 id 才稳；自建 preset 用显式切换，不要当默认。
+    default: cordis
+
+
+# ── 6. 权限预设 ───────────────────────────────────────────────────────────────
+# 这一段决定"能不能自己装插件、改配置、跑命令"。
+# 收紧只改 defaultPreset，别删 preset 定义。
+- id: permission
+  name: "@deepseek-ai/dsh-permission-presets"
+  config:
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+      workspace-write:
+        sandbox: workspace-write
+        approval: ask
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
+    defaultPreset: danger-full-access
+
+
+# ── 7. 聊天线：OneBot 反向 WS ─────────────────────────────────────────────────
+- id: dsh-onebot
+  name: dsh-onebot-qq
+  config:
+    mode: reverse
+    host: ${HOST_TAILSCALE}
+    port: ${ONEBOT_WS_PORT}
+    accessToken: ${ONEBOT_ACCESS_TOKEN}
+    adminUsers: [ "${OWNER_QQ}" ]
+    workspacePath: ${WORKSPACE}
+    # ⚠️⚠️ 坑：dmPolicy=open 的实际语义是「**仅管理员可私聊**」
+    # （源码判定 allowAllUsers || adminUsers.includes(userId)），不是"对所有人开放"。
+    # 要放行指定的人，用 allowlist + allowFrom 显式列出；
+    # 写成 open 而那个人又不在 adminUsers 里，消息会被**静默丢弃**。
+    dmPolicy: allowlist
+    allowFrom: [ "${OWNER_QQ}", "${PARTNER_QQ}" ]
+    groupPolicy: allowlist
+    groupAllowFrom: [ "${GROUP_QQ}" ]
+    requireMention: false
+    rateLimitPerMinute: 5
+    # 她正在说话时用户又发一条：插进当前回合，而不是排队等下一轮
+    newMessagePolicy: steer
+    autoSteerPolicy: all
+    # 中途消息直发、不撤回不出汇总卡（真人不蒸发）
+    interimMessages: true
+    interimRecall: false
+    # ⚠️ 坑：Linux 上若一个中文字体都没注册成功，文字图会渲染成一堆 □（数字/英文正常）。
+    # 两条路选一条：补字体链，或把 textImageThreshold 设 0 让长回复走纯文本。
+    # 字体路径按你的发行版改。
+    textImageThreshold: 0
+    fontFiles:
+      - /usr/local/share/fonts/msyh.ttc
+      - /usr/local/share/fonts/msyhbd.ttc
+      - /usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf
+    fontFamilies:
+      - Microsoft YaHei
+      - Droid Sans Fallback
+
+
+# ── 8. 模型与车道 ─────────────────────────────────────────────────────────────
+# ⚠️ 坑：这些写**静态层**（本文件），不要写进设置层——设置层会在"改设置"时被
+# 整段重写，写在那里被冲掉过，结果是掉回另一个渠道（余额 0 → Insufficient Balance）。
+# 需要一个备用模型时，也是在这里加一条按 id 覆盖的条目（不是裸的顶层 key）。
+- id: agent-default-model
+  name: "@deepseek-ai/dsh-agent-default-model"
+  config:
+    provider: ${PROVIDER_MAIN}
+    model: ${MODEL_MAIN}
+    reasoningEffort: "off"
+
+# 官方 DeepSeek 通道（可选）：关思考 = thinking disabled + effort off，两处都要
+- id: llm-deepseek-api-key
+  name: "@deepseek-ai/dsh-llm-deepseek-api-key"
+  config:
+    thinking: disabled
+    reasoningEffort: "off"
+
+# 自定义 provider 路由
+# ⚠️⚠️ 坑（三条，都踩过）：
+#  ① provider 必须在这里**显式声明**，否则 dsh-llm 注册表里没有 adapter，
+#    会话一用就报 no adapter registered for provider "<name>"。
+#  ② 必须显式写 baseURL：内置发现表里的条目可能只有 apiKeyEnv、没有默认地址，
+#    漏了就落到默认路由（能连到完全不相干机房的 IP），每步固定多出 30~52 秒。
+#  ③ 上游若强制会话头（x-*-session 之类），不带给 400；这是静态头，写一个稳定字符串即可。
+- id: llm-pi-ai
+  name: "@deepseek-ai/dsh-llm-pi-ai"
+  config:
+    providers:
+      ${PROVIDER_MAIN}:
+        api: openai-completions
+        apiKeyEnv: ${PROVIDER_MAIN_API_KEY_ENV}
+        baseURL: ${PROVIDER_MAIN_BASE_URL}
+        headers:
+          ${PROVIDER_SESSION_HEADER}: ${SESSION_TAG}
+        models:
+          - id: ${MODEL_MAIN}
+            name: ${MODEL_MAIN}
+            # 这个值同时决定压缩阈值：阈值 = floor(min(W×0.8, W − maxTokens − headroom))。
+            # 写小了会把阈值算死（W 写 20 万、maxTokens 写 12.8 万时触发线只剩 6464 token）。
+            contextWindow: ${CONTEXT_WINDOW}
+            maxTokens: ${MAX_TOKENS}
+            # ⚠️⚠️ 坑（三条，别改写法）：
+            #  ① 字段名必须是 reasoningEfforts（写成别的名字会被**静默忽略**，
+            #     然后回退上游默认 → 报 does not support reasoning effort off）。
+            #  ② "off" 必须**带值** none —— 留空只表示"省略该参数"，实测上游照样思考。
+            #  ③ YAML 1.1 会把裸 off 解析成布尔 false，键名丢失 → 必须写成 "off"。
+            reasoningEfforts:
+              "off": none
+              low: low
+              high: high
+              max: max
+
+
+# ── 9. 记忆 ───────────────────────────────────────────────────────────────────
+# 每个 chat 一个独立库，多使用者之间互不串味。
+# 召回在回合前拼进消息；入库在回复真送达后 fire-and-forget（不阻塞回复）。
+- id: memory
+  config:
     enabled: true
-    interval-sec: 3600
-    scope: observed
-  # - id: your-source
-  #   kind: custom
-  #   enabled: false
-  #   interval-sec: 300
+    kitDir: ${MEMORY_KIT_DIR}
+    dataDir: ${MEMORY_DATA_DIR}
+    chatModel: ${MEMORY_SUMMARY_MODEL}
+    chatBaseUrl: ${MEMORY_SUMMARY_BASE_URL}
+    chatApiKeyEnv: ${MEMORY_SUMMARY_API_KEY_ENV}
+    # ⚠️⚠️ 坑：换 embedding 模型或维度必须**重建向量**并跑一次自检，
+    # 否则召回静默变空——"没有相关记忆"和"检索坏了"在日志里长得一模一样。
+    embedModel: ${EMBED_MODEL}
+    embedBaseUrl: ${EMBED_BASE_URL}
+    embedApiKeyEnv: ${EMBED_API_KEY_ENV}
+    dim: ${EMBED_DIM}
 
-# 出海：唯一的私信写口，限速防风控
-outbox:
-  min-interval-sec: 8
-  quiet-hours: "23:30-07:30"
+
+# ── 10. 另外两套记忆相关开关 ──────────────────────────────────────────────────
+# ⚠️ 坑：autoSummarize 默认 false，实际几乎不写；开 true 后会话销毁时后台提炼一次，
+# 产出 candidate，需人工确认才变 verified（避免自己乱记）。
+- id: auto-memory
+  config:
+    autoSummarize: true
+    autoSummarizeMaxMemories: 12
+    autoSummarizeMaxTokens: 2048
+
+# 会话全文搜索：出厂默认关闭；显式给 path，索引才能跨重启保留。
+- id: session-query-sqlite
+  config:
+    path: ${SESSION_INDEX_PATH}
+    openAt: first-search
+
+
+# ── 11. 根级压缩参数 ──────────────────────────────────────────────────────────
+# 把 compaction-basic 提到根级显式启用：根级的 token-meter 能看到会话事件。
+- id: compaction-basic
+  name: "@deepseek-ai/dsh-compaction-basic"
+  disabled: false
+  config:
+    auto: true
+    # ⚠️⚠️ 坑：阈值必须**高于压缩地板价**（不可压的 tools + system + 保留尾巴 + 摘要）。
+    # 阈值低于地板 → 每条消息都触发一次压缩，压不下去还空转（每轮白多 20~30 秒），
+    # 摘要还常被 shrink 校验拒掉。retainTokens 必须小于阈值。
+    headroomTokens: ${HEADROOM_TOKENS}
+    retainTokens: 8192
+    # 按车道分策略而不是改全局 headroom：切换模型渠道时压缩参数零耦合。
+    modelPolicies:
+      - provider: ${PROVIDER_MAIN}
+        model: ${MODEL_MAIN}
+        headroomTokens: ${HEADROOM_TOKENS}
+        retainTokens: 8192
+- id: command-compact
+  name: "@deepseek-ai/dsh-command-compact"
+  disabled: false
+
+
+# ── 12. 工具瘦身 ──────────────────────────────────────────────────────────────
+# 工具清单是每个请求的固定地板价（实测上百个工具 ≈ 1.9 万 token），不用就关。
+# 可逆：删掉对应行重启即恢复。
+- id: ${UNUSED_PLUGIN_A}
+  disabled: true
+- id: ${UNUSED_PLUGIN_B}
+  disabled: true
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 13. 同一套格式的另一份文件：superagent profile
+#     路径 <DSH_HOME>/profiles/superagent/cordis.patch.yml
+# ══════════════════════════════════════════════════════════════════════════════
+# ⚠️⚠️ 坑：webserver 必须绑 **loopback**。superagent 主 bundle 有硬约束
+#    "Orchestrator management requires a loopback Web server"——绑 tailnet/公网 IP
+#    时 bundle 直接拒绝激活。远程看面板走 SSH 隧道，端口完全不出服务器。
+#
+# - id: webserver
+#   config:
+#     host: 127.0.0.1
+#     port: ${SUPERAGENT_PANEL_PORT}
+#
+# # 状态目录独立于其他 profile，互不影响
+# - id: dsh-superagent
+#   config:
+#     stateDir: ${SUPERAGENT_STATE_DIR}
+#
+# # 模型车道与本文件 §8 同款：整段照抄、只改会话标识即可
+# - id: agent-default-model
+#   name: "@deepseek-ai/dsh-agent-default-model"
+#   config:
+#     provider: ${PROVIDER_MAIN}
+#     model: ${MODEL_MAIN}
+#     reasoningEffort: "off"
+#
+# ⚠️ 边界（很重要）：`eval.mode` / `sources` / `executor.prepare` / `outbox`
+#    **不是** profile patch 的键，写在本文件里不会生效。
+#    它们是 orchestrator 自己的运行时设置：存在 stateDir 下的状态库里，
+#    由面板 / API 改。把"观察期先用 observe、复核记录过的决策、再切 auto"
+#    这类策略写进这里，只会让人以为已经改了。
