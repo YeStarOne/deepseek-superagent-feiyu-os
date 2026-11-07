@@ -37,7 +37,7 @@ done
 run() { if [ "$DRY" = 1 ]; then log "would: $*"; else "$@"; fi; }
 
 WORKSPACE="${WORKSPACE:-$HOME/work}"
-PYTHON_BIN="${PYTHON_BIN:-$(command -v python3 || echo python3)}"
+PYTHON_BIN="${PYTHON_BIN:-$(command -v python3 || command -v python || echo python3)}"
 SERVICE_USER="${SERVICE_USER:-feiyu}"
 OUTBOX_MIN_INTERVAL="${OUTBOX_MIN_INTERVAL:-8}"
 OUTBOX_MEMORY_MAX="${OUTBOX_MEMORY_MAX:-256M}"
@@ -65,7 +65,7 @@ verify() {
 
   if [ -f "$LEDGER" ]; then
     local dup
-    dup="$(python3 - "$LEDGER" <<'PY'
+    dup="$("$PYTHON_BIN" - "$LEDGER" <<'PY'
 import json, sys, collections
 seen = collections.Counter()
 for line in open(sys.argv[1], encoding='utf-8'):
@@ -124,6 +124,8 @@ else
       if [ -z "$val" ]; then missing="$missing $key"; else out="${out//@$key@/$val}"; fi
     done
     [ -z "$missing" ] || fatal "模板缺 env：$missing"
+    left="$(printf '%s' "$out" | grep -oE '@[A-Z0-9_]+@' | sort -u | tr '\n' ' ' || true)"
+    if [ -n "$left" ]; then log "FATAL: 渲染后仍有未填占位符：$left（$SRC）"; exit 5; fi
     printf '%s\n' "$out" > "$UNIT"
     systemctl daemon-reload
     systemctl enable --now dsh-outbox-qq

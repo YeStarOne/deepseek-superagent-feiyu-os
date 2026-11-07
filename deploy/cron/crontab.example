@@ -1,5 +1,6 @@
 # 示例 crontab（脚本永不缺席：定时跑脚本，脚本只在需要判断时叫醒会话）
-# 安装：crontab -e 后按需修改 @PLACEHOLDER@
+# 安装：install/04-memory.sh 与 install/09-watchdog.sh 会渲染下面的占位符并写入 crontab；
+#       手工装的话，把占位符逐个换成真实路径，留空会让 cron 静默跑空。
 
 # 每晚蒸馏昨天对话 -> 笔记（纯 stdlib）
 5 4 * * *  @PYTHON_BIN@ @WORKSPACE@/bin/night_memory.py >> @WORKSPACE@/logs/night_memory.log 2>&1

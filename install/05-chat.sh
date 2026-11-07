@@ -34,6 +34,8 @@ for a in "$@"; do
 done
 run() { if [ "$DRY" = 1 ]; then log "would: $*"; else "$@"; fi; }
 
+PYBIN="$(command -v python3 || command -v python || echo python3)"
+
 DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
 PROFILE_WEB="${PROFILE_WEB:-web}"
 PROF_DIR="$DSH_HOME/profiles/$PROFILE_WEB"
@@ -43,7 +45,7 @@ OB_HOST="${ONEBOT_WS#*://}"; OB_HOST="${OB_HOST%%:*}"
 OB_PORT="${ONEBOT_WS##*:}"; OB_PORT="${OB_PORT%%/*}"
 
 render_cordis() {
-  python3 - "$1" "$2" <<'PY'
+  "$PYBIN" - "$1" "$2" <<'PY'
 import os, re, sys
 src, dst = sys.argv[1], sys.argv[2]
 text = open(src, encoding='utf-8').read()

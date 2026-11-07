@@ -161,12 +161,15 @@ else
   if [ "$DRY" = 1 ]; then
     log "would: 从 $CRON_SRC 渲染 health_check / token 报表两行写入 crontab"
   else
+    rendered="$(sed -e "s|@PYTHON_BIN@|$PYTHON_BIN|g" -e "s|@WORKSPACE@|$WORKSPACE|g" "$CRON_SRC" \
+      | grep -E 'health_check|token_usage_report')"
+    left="$(printf '%s' "$rendered" | grep -oE '@[A-Z0-9_]+@' | sort -u | tr '\n' ' ' || true)"
+    if [ -n "$left" ]; then log "FATAL: cron 渲染后仍有未填占位符：$left（$CRON_SRC）"; exit 5; fi
     TMP="$(mktemp)"
     {
       crontab -l 2>/dev/null || true
       echo "$MARK"
-      sed -e "s|@PYTHON_BIN@|$PYTHON_BIN|g" -e "s|@WORKSPACE@|$WORKSPACE|g" "$CRON_SRC" \
-        | grep -E 'health_check|token_usage_report'
+      printf '%s\n' "$rendered"
     } > "$TMP"
     crontab "$TMP"; rm -f "$TMP"
     log "cron 已装"
