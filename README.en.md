@@ -15,12 +15,12 @@ Not a demo — the production record of 2026-11-07:
 ```mermaid
 timeline
     title One fish, one day (all numbers real)
-    09:30 Lane returns to day shift : the slow night lane goes offline : she is back on her daytime brain
-    10:32 Event line switches to auto : a fishing rod stalls, nobody pages anyone : the ticket opens itself
-    10:33 Worker dispatched : work-order rules injected : she works in her own voice, trigger→dispatch ≤7s
-    11:32 Report goes ashore : referee→ticket→worker→DM, the whole chain : 4/4 delivered
-    23:00 The day's conversations are distilled : the memory graph grows new nodes : tomorrow's her still knows today
-    01:00 The team takes the night shift : the captain wakes every 20 minutes and hands out work : 33 PRs merged, zero conflicts
+    0930 Lane returns to day shift : the slow night lane goes offline : she is back on her daytime brain
+    1032 Event line switches to auto : a fishing rod stalls, nobody pages anyone : the ticket opens itself
+    1033 Worker dispatched : work-order rules injected : she works in her own voice, trigger to dispatch under 7 seconds
+    1132 Report goes ashore : referee, ticket, worker, DM, the whole chain : 4/4 delivered
+    2300 The day's conversations are distilled : the memory graph grows new nodes : tomorrow's her still knows today
+    0100 The team takes the night shift : the captain wakes every 20 minutes and hands out work : 33 PRs merged, zero conflicts
 ```
 
 By day she watches the event line herself: a broken rod gets fixed, and the fix ends with a message to her person.
