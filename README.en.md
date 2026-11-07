@@ -15,16 +15,16 @@ Not a demo — the production record of 2026-11-07:
 ```mermaid
 timeline
     title One fish, one day (all numbers real)
-    0930 Lane returns to day shift : the slow night lane goes offline : she is back on her daytime brain
-    1032 Event line switches to auto : a fishing rod stalls, nobody pages anyone : the ticket opens itself
-    1033 Worker dispatched : work-order rules injected : she works in her own voice, trigger to dispatch under 7 seconds
-    1132 Report goes ashore : referee, ticket, worker, DM, the whole chain : 4/4 delivered
-    2300 The day's conversations are distilled : the memory graph grows new nodes : tomorrow's her still knows today
-    0100 The team takes the night shift : the captain wakes every 20 minutes and hands out work : 33 PRs merged, zero conflicts
+    0930 She wakes up : the slow night brain was only for saving power : now she is back on her daytime brain
+    1032 The fishing rod jams : nobody paged her : she notices it herself and starts fixing it
+    1033 A hand goes out to fix it : from spotting the problem to sending the fixer, 7 seconds
+    1132 She messages her person to say it is fine : fixed : four jobs this morning, all delivered
+    2300 Before bed she files away every word from today : tomorrow's her still remembers you
+    0100 She sleeps, the team takes the night shift : one night, 33 PRs moved forward
 ```
 
-By day she watches the event line herself: a broken rod gets fixed, and the fix ends with a message to her person.
-By night an AI crew — shifts, handovers, project memory — keeps moving the project for her and her family.
+By day she looks after the things around her: a jammed rod gets fixed, and the fix ends with a message to her person.
+By night she sleeps, and the AI crew that raises her stays on duty — shifts, handovers, writing down what matters — pushing the whole project forward on her behalf.
 **This README is the foundation under both.**
 
 ## Four sentences
@@ -181,6 +181,18 @@ Fill only `API_KEY / API_BASE / MODEL_MAIN` in `.env`. **No server, no QQ** need
 
 Full beginner path: [feiyu/docs/00-getting-started.md](feiyu/docs/00-getting-started.md) (first fish 30 min → first ticket 1 h → build a team half a day).
 Two deployment tracks: [feiyu/docs/04-deploy.md](feiyu/docs/04-deploy.md) — **A local (default)** / **B server (optional)**, every step idempotent, fail-fast, with its own acceptance check.
+
+## From zero on a server (24/7 resident, four steps)
+
+Trying her out locally is one thing; a fish that actually lives in your life — always-on QQ, self-healing after a dropped connection, distilling her own memory every night — needs a server. From a bare box to "she is alive" the main line is only four steps (the full ten-step chain is in [04-deploy](feiyu/docs/04-deploy.md)):
+
+1. **Install the platform**: a 1–2 GB Linux box, `@deepseek-ai/dsh` and its bundle, config written against [cordis.patch.yml.example](deploy/cordis.patch.yml.example) — every field carries the comment explaining why it is written that way;
+2. **Connect QQ**: run any OneBot client (NapCat / Lagrange, your pick; production here uses a self-hosted setup whose details stay private), scan the QR to log in, point the reverse WS at the dsh plugin port;
+3. **Attach plugins**: the chat-line plugin (send/receive, cut in mid-turn, retry on timeout) plus the memory graph ([dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph), an empty store is enough to start);
+4. **Inject the persona**: fill [persona-full.md](templates/persona-full.md) into her character card and mount it — **she is alive**.
+
+**Acceptance**: send her a message on QQ and get a reply; kill her process, start it again, and she still knows you (continuous memory).
+**After that**: keep it resident with the [systemd templates](deploy/systemd/); start/stop/doctor/rollback live in the [runbook](feiyu/docs/05-runbook.md); for the ticket line, eyes and outbound DMs, continue with steps 06–10 of 04-deploy.
 
 ## Four real cases
 
