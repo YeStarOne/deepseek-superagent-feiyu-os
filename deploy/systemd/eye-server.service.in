@@ -1,0 +1,15 @@
+[Unit]
+Description=eye-server (vision notes, throttled)
+After=network-online.target
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+WorkingDirectory=@WORKSPACE@
+EnvironmentFile=@ENV_FILE@
+ExecStart=@PYTHON_BIN@ @WORKSPACE@/eye_server.py --port @EYE_PORT@ --clip-per-hour @EYE_CLIP_PER_HOUR@
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

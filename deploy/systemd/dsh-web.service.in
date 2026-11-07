@@ -1,0 +1,18 @@
+[Unit]
+Description=dsh web (chat profile)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+WorkingDirectory=@DSH_HOME@
+EnvironmentFile=@ENV_FILE@
+Environment=NODE_OPTIONS=--max-old-space-size=@HEAP_MAX_MB@
+ExecStart=@NODE_BIN@ @DSH_BIN@ web --profile @PROFILE_WEB@
+Restart=always
+RestartSec=5
+MemoryMax=@MEMORY_MAX@
+
+[Install]
+WantedBy=default.target

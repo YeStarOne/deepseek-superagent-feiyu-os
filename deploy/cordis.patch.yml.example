@@ -1,0 +1,32 @@
+# cordis.patch.yml 示例（字段以你安装的版本为准；本文件只给结构与安全默认值）
+# 真值不进仓：复制后填 @PLACEHOLDER@，并在热装前备份副本（热装会覆盖副本）。
+
+agent-default-model: "@MODEL_MAIN@"
+agent-fallback-model: "@MODEL_FALLBACK@"
+
+# 先观察，不自动执行。切 auto 前必须先跑 observe 窗口并留痕（见 docs/03-cases/02）。
+eval:
+  mode: observe          # observe | auto
+  max-workers: 1
+
+# worker 首条消息模板：决定它以什么身份、什么口吻开始干活
+executor:
+  prepare: "@WORKSPACE@/scripts/prepare-worker.sh"
+  max-workers: 1
+
+# 来源：一个玩具源 + 你自己的工作源
+sources:
+  - id: weather
+    kind: example
+    enabled: true
+    interval-sec: 3600
+    scope: observed
+  # - id: your-source
+  #   kind: custom
+  #   enabled: false
+  #   interval-sec: 300
+
+# 出海：唯一的私信写口，限速防风控
+outbox:
+  min-interval-sec: 8
+  quiet-hours: "23:30-07:30"

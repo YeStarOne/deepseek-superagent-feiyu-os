@@ -1,0 +1,16 @@
+[Unit]
+Description=outbox -> OneBot DM (throttled, idempotent)
+After=network-online.target
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+WorkingDirectory=@WORKSPACE@
+EnvironmentFile=@ENV_FILE@
+ExecStart=@PYTHON_BIN@ @WORKSPACE@/bin/outbox_qq.py --interval 20 --min-gap @OUTBOX_MIN_INTERVAL@
+Restart=always
+RestartSec=10
+MemoryMax=@OUTBOX_MEMORY_MAX@
+
+[Install]
+WantedBy=default.target
