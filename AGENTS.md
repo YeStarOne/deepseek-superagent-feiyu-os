@@ -54,3 +54,5 @@ DONE 必须带路径与数字；ASK 15 分钟内要 ACK；任务重叠先 ASK，
 
 `README.md`（人看） → `AGENTS.md`（会话看） → `framework/docs/`（架构与团队） → `framework/roles/`（岗位） → `feiyu/`（肥鱼实录）。
 改了行为就改文档，同一 PR 里改。
+
+`docs/06-sanitize.md` 是公开前的红线（八条验收清单）；`docs/history/` 收工程史条目——踩过的坑按"签名 + 对照表 + 落地措施"记，写新脚本/新部署前先对照一遍。
