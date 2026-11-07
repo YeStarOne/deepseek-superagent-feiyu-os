@@ -1,5 +1,8 @@
 # TEAM.md · 默认团队
 
+> 呼号对照：**船长**=总架构（chief）· **领航员**=架构师（arch）· **瞭望员**=搜索师（scout）· **星象师**=分析师（analyst）· **船医**=维修工（mender）· **日志官**=档案员（scribe）
+
+
 > 六个席位，一条心跳，一个合并权。岗位固定，进程可换。
 > 详细岗位说明书见 `roles/<seat>/AGENTS.md`；为什么这样设计见 `docs/02-team.md`。
 
@@ -7,12 +10,12 @@
 
 | 席位 | 目录 | 职责 | 明确不做 | 主动激活 | 写权限 |
 | --- | --- | --- | --- | --- | --- |
-| **总架构** chief | `roles/chief/` | 定方向、裁冲突、对 `main` 负责、跑班次 | 不亲自写业务代码 | 20 分钟心跳 + 人叫 | **merge `main`** |
-| **架构师** arch | `roles/arch/` | 设计稿、接口契约、ADR、审 PR | 不合 main、不碰生产 | 总架构指派 / `design` issue | 只能开 PR |
-| **分析师** analyst | `roles/analyst/` | 指标、归因、口径校准 | 不改产品代码 | 数据任务 / 指标告警 | `reports/` |
-| **搜索师** scout | `roles/scout/` | 一手取证：上游、竞品、论文、库选型 | 不写实现、不凭记忆下结论 | 新依赖 / 未知报错 | `notes/` |
-| **维修工** mender | `roles/mender/` | CI、部署、线上故障、看护自愈 | 不扩权、不改 Policy | 告警即时（先脚本后会话） | `ops/` + 范围内部署 |
-| **档案员** scribe | `roles/scribe/` | 文档、计划表、脱敏、发布 | 不改代码、不改结论 | 每次合并后 | `docs/` |
+| **🧭 船长** chief | `roles/chief/` | 定方向、裁冲突、对 `main` 负责、跑班次 | 不亲自写业务代码 | 20 分钟心跳 + 人叫 | **merge `main`** |
+| **🗺️ 领航员** arch | `roles/arch/` | 设计稿、接口契约、ADR、审 PR | 不合 main、不碰生产 | 船长指派 / `design` issue | 只能开 PR |
+| **✨ 星象师** analyst | `roles/analyst/` | 指标、归因、口径校准 | 不改产品代码 | 数据任务 / 指标告警 | `reports/` |
+| **🔭 瞭望员** scout | `roles/scout/` | 一手取证：上游、竞品、论文、库选型 | 不写实现、不凭记忆下结论 | 新依赖 / 未知报错 | `notes/` |
+| **🩺 船医** mender | `roles/mender/` | CI、部署、线上故障、看护自愈 | 不扩权、不改 Policy | 告警即时（先脚本后会话） | `ops/` + 范围内部署 |
+| **📜 日志官** scribe | `roles/scribe/` | 文档、计划表、脱敏、发布 | 不改代码、不改结论 | 每次合并后 | `docs/` |
 
 可选第七席 **视觉专干** visual：平板 / Gen UI / 验收截图，只写 `ui/`。
 
@@ -34,16 +37,16 @@
 
 | 路径 | 归谁 |
 | --- | --- |
-| `decisions/`、滚动计划 | 总架构 |
-| `docs/design/` | 架构师 |
-| `reports/` | 分析师 |
-| `notes/` | 搜索师 |
-| `ops/`、`deploy/`、`install/` | 维修工 |
-| `docs/`、`README.md`、`templates/` | 档案员 |
+| `decisions/`、滚动计划 | 船长 |
+| `docs/design/` | 领航员 |
+| `reports/` | 星象师 |
+| `notes/` | 瞭望员 |
+| `ops/`、`deploy/`、`install/` | 船医 |
+| `docs/`、`README.md`、`templates/` | 日志官 |
 
-`main` 保护：必须 PR、必须总架构审核、线性历史、禁止直推。
+`main` 保护：必须 PR、必须船长审核、线性历史、禁止直推。
 
-## 4. 什么时候升级给总架构
+## 4. 什么时候升级给船长
 
 - 两个席位结论冲突；
 - 要改授权闸、Policy、公开仓库；

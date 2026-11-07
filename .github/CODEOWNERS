@@ -1,28 +1,28 @@
 # CODEOWNERS · 路径 ↔ 席位
-# 席位还没有独立账号前，全部由总架构兜底；建号后逐行替换。
+# 席位还没有独立账号前，全部由船长兜底；建号后逐行替换。
 # 规则：越靠下的模式优先级越高。
 
 *                       @YeStarOne
 
-# 决策与计划：只有总架构能改
+# 决策与计划：只有船长能改
 /decisions/             @YeStarOne
 /framework/TEAM.md      @YeStarOne
 
-# 设计：架构师
+# 设计：领航员
 /framework/docs/design/ @YeStarOne
 
-# 数据与结论：分析师
+# 数据与结论：星象师
 /reports/               @YeStarOne
 
-# 调研笔记：搜索师
+# 调研笔记：瞭望员
 /notes/                 @YeStarOne
 
-# 部署与运维：维修工
+# 部署与运维：船医
 /ops/                   @YeStarOne
 /deploy/                @YeStarOne
 /install/               @YeStarOne
 
-# 文档与模板：档案员（framework=协议文档，feiyu=肥鱼实录）
+# 文档与模板：日志官（framework=协议文档，feiyu=肥鱼实录）
 /framework/docs/        @YeStarOne
 /feiyu/                 @YeStarOne
 /README.md              @YeStarOne
