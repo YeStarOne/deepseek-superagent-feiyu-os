@@ -18,34 +18,34 @@
 import argparse, json, os, sqlite3, sys, time
 
 DB = os.path.expanduser(r'~/.zcode/v2/tasks-index.sqlite')
-AUTOMATION_ID = 'automation-devshift-feiyuos'
-TITLE = '🧭 鱼鱼OS 开发主持值守'
-WORKSPACE_KEY = r'G:\YourWorkspace'
-WORKSPACE_PATH = r'G:\YourWorkspace'
-TASK_ID = 'sess_REPLACE_WITH_YOUR_CHIEF_SESSION'   # 本会话（大肥鱼总架构）
+CHIEF_AUTOMATION_ID = os.environ.get('CHIEF_AUTOMATION_ID', 'automation-devshift')  # 改成你的项目名
+CHIEF_TITLE = os.environ.get('CHIEF_TITLE', '🧭 开发主持值守（改成你的项目名）')
+CHIEF_WORKSPACE = os.environ.get('CHIEF_WORKSPACE', r'G:\YourWorkspace')
+CHIEF_WORKSPACE_KEY = CHIEF_WORKSPACE
+CHIEF_WORKSPACE_PATH = CHIEF_WORKSPACE
+CHIEF_SESSION_ID = os.environ.get('CHIEF_SESSION_ID', 'sess_REPLACE_WITH_YOUR_CHIEF_SESSION')
 MODE = 'yolo'
 THOUGHT_LEVEL = 'max'
-MODEL_SELECTION = '{"providerId":"new-provider","modelId":"deepseek-v4.1-flash","options":{"reasoningLevel":"max"}}'
+CHIEF_MODEL_SELECTION = os.environ.get('CHIEF_MODEL_SELECTION', '{"providerId":"REPLACE_PROVIDER","modelId":"REPLACE_MODEL","options":{"reasoningLevel":"max"}}')
 
-PROMPT = '''🧭 鱼鱼 OS 开发主持值守（周期唤醒，不是用户在提问）
+PROMPT = '''🧭 开发主持值守（周期唤醒，不是用户在提问）
 
 按顺序做，每轮都要做实事：
 0) **队友中断看护**（用户 11-07 明确要求）：查本机会话状态，发现"上一轮 error/interrupted 且 todo 里有 in_progress"的会话就唤醒它继续。
    用只读方式查 ~/.zcode/v2/tasks-index.sqlite 的 tasks 表：task_status IN ('error','interrupted') 且 updated_at 在近 30 分钟内；
    再读 ~/.zcode/cli/db/db.sqlite（mode=ro）的 todo 表看该 session 有无 in_progress 项。
-   有则 mcp__reason-network__send_message 发一句："你 01:2x 的回合被 3008 并发限流打断，todo 里还有 X 未完成，请从断点继续，做一段落一次盘"。
+   有则 mcp__reason-network__send_message 发一句："你上一轮的回合被打断，todo 里还有 X 未完成，请从断点继续，做一段落一次盘"。
    **注意**：自己（本主持会话，用 CHIEF_SESSION_ID 指认）也会因上一轮报错显示 error，跳过自己；同一会话 30 分钟内只唤醒一次，别刷屏。
 1) mcp__reason-network__check_inbox 查队友消息：合并请求立刻处理，问题立刻回。
-2) ssh agent@<server-host>（带 PATH=$HOME/.local/bin:$PATH GH_CONFIG_DIR=$HOME/.config/gh-agent）
-   查 gh pr list -R <owner>/<impl-repo> --state open；有 PR 就 FEIYU_HOST=agent@<server-host> bash scripts/merge-pr.sh <号>。
-3) 巡检生产：systemctl --user is-active dsh-web dsh-superagent dsh-outbox-qq eye-server；
-   ~/<workspace>/logs/token/ 最新报告；~/pc-body/ledger.jsonl 尾部异常；superagent tickets 计数。
+2) ssh <user>@<server-host>（带上你查 PR 的工具与凭据环境变量）
+   查 gh pr list -R <owner>/<impl-repo> --state open；有 PR 就 DEPLOY_HOST=<user>@<server-host> bash scripts/merge-pr.sh <号>。
+3) 巡检生产：systemctl --user is-active <你的服务名列表>；
+   ~/<workspace>/logs/ 最新报告与错误；<你的台账文件> 尾部异常；工单计数。
 4) 有异常就当天修；修不了写清现象+下一步到 docs/history/ 并走 PR。
-5) 推进 docs/03-roadmap.md 的 P1 剩余项（1.2 规则生活化 / 1.3 stardew 切 auto / 1.4 worker 人设 / 1.5 首单验收），
-   能直接做的就做，verify.sh 过 → 开 PR → 自己合并（合并权在本会话）。
+5) 推进 <你的 roadmap> 下一项：能直接做的就做，验证脚本过 → 开 PR → 自己合并（合并权在本会话）。
 6) 收尾一句话：本轮做了什么，或"巡检正常 + 具体数值"。
 
-红线：令牌绝不落盘；不重启 SnowLuma；dsh-web 重启必须挑她空闲；网关只绑 Tailscale；不提交 keys_tmp/admin-password；补丁前备份。'''
+红线：令牌绝不落盘；生产重启挑空闲窗口；网关只绑内网；不提交临时凭据文件；补丁前备份。'''
 
 
 def next_slot_ms(interval_min: int) -> int:
@@ -64,7 +64,7 @@ def connect():
 def fetch(con):
     cur = con.execute(
         'SELECT automation_id,enabled,lifecycle_status,running,next_run_at,last_run_at,run_count,cron_expr '
-        'FROM automations WHERE automation_id=?', (AUTOMATION_ID,))
+        'FROM automations WHERE automation_id=?', (CHIEF_AUTOMATION_ID,))
     r = cur.fetchone()
     if not r:
         return None
@@ -86,8 +86,8 @@ def upsert(con, interval_min: int, enable: bool):
                      thought_level=?,workspace_key=?,workspace_path=?,target_task_id=?,location_kind='local',
                      recurring=1,schedule_rule=?,enabled=?,lifecycle_status=?,next_run_at=?,
                      running=0,claimed_at=NULL,updated_at=? WHERE automation_id=?''',
-                    (TITLE, cron, PROMPT, MODEL_SELECTION, MODE, THOUGHT_LEVEL, WORKSPACE_KEY, WORKSPACE_PATH,
-                     TASK_ID, rule, enabled, status, nxt if enable else None, now, AUTOMATION_ID))
+                    (CHIEF_TITLE, cron, PROMPT, CHIEF_MODEL_SELECTION, MODE, THOUGHT_LEVEL, CHIEF_WORKSPACE_KEY, CHIEF_WORKSPACE_PATH,
+                     CHIEF_SESSION_ID, rule, enabled, status, nxt if enable else None, now, CHIEF_AUTOMATION_ID))
     else:
         con.execute('''INSERT INTO automations (
             automation_id,title,cron_expr,prompt,model,provider,mode,thought_level,
@@ -102,10 +102,10 @@ def upsert(con, interval_min: int, enable: bool):
             0,0,?,?,?,NULL,
             0,NULL,'idle',0,NULL,NULL,
             ?,?,?,NULL,NULL,NULL)''',
-                    (AUTOMATION_ID, TITLE, cron, PROMPT, MODE, THOUGHT_LEVEL,
-                     WORKSPACE_KEY, WORKSPACE_PATH, TASK_ID,
+                    (CHIEF_AUTOMATION_ID, CHIEF_TITLE, cron, PROMPT, MODE, THOUGHT_LEVEL,
+                     CHIEF_WORKSPACE_KEY, CHIEF_WORKSPACE_PATH, CHIEF_SESSION_ID,
                      rule, enabled, status, nxt if enable else None,
-                     now, now, MODEL_SELECTION))
+                     now, now, CHIEF_MODEL_SELECTION))
     con.commit()
     return fetch(con)
 

@@ -1,6 +1,6 @@
 # 质疑图恒宇，理解图恒宇，超越图恒宇
 
-这是一份立场说明，不是技术文档。技术从 [01-architecture.md](01-architecture.md) 开始。
+这是一份立场说明，不是技术文档。技术从 [01-architecture.md](../../framework/docs/01-architecture.md) 开始。
 
 ## 一、质疑
 

@@ -21,7 +21,7 @@ import argparse, io, json, os, sqlite3, sys, time
 
 TASKS_DB = os.path.expanduser(r'~/.zcode/v2/tasks-index.sqlite')
 CLI_DB = os.path.expanduser(r'~/.zcode/cli/db/db.sqlite')
-SELF_ID = 'sess_REPLACE_WITH_YOUR_CHIEF_SESSION'   # 主持会话自己, 永远跳过
+CHIEF_SESSION_ID = os.environ.get('CHIEF_SESSION_ID', 'sess_REPLACE_WITH_YOUR_CHIEF_SESSION')  # 主持会话自己, 永远跳过
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
@@ -59,7 +59,7 @@ def main():
     cli.row_factory = sqlite3.Row
     for r in rows:
         tid = r['task_id']
-        if tid == SELF_ID:
+        if tid == CHIEF_SESSION_ID:
             continue
         try:
             todos = cli.execute(

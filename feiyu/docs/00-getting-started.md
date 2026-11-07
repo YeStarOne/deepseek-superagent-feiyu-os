@@ -1,7 +1,7 @@
 # 00 · 新手上路：从部署一条鱼，到搭起一支会自动干活的团队
 
 > 目标读者：第一次接触本仓的人。读完能回答三个问题：**怎么把一条鱼部署起来、怎么让事件线自己开工、怎么搭一支会推进项目的团队**。
-> 路线图：第一节条鱼（30 分钟）→ 第一张工单（1 小时）→ 搭自己的默认团队（半天）。
+> 路线图：第一条鱼（30 分钟，本地就够）→ 第一张工单（1 小时）→ 搭自己的默认团队（半天）。
 
 ## 总览图（先看懂再动手）
 
@@ -37,14 +37,19 @@ flowchart TB
 
 ---
 
-## 第一节条鱼（30 分钟）
+## 第一条鱼（30 分钟，本地就够——默认无服务器）
 
 ```bash
-cd install && bash 01-system.sh --verify && bash 02-onebot.sh   # 占位符已在 env.example 里配好
+bash install/local/seed.sh --dry-run    # 先看会做什么
+bash install/local/seed.sh --yes        # 平台 + 记忆目录 + 起停/体检脚本
+~/.feiyu/bin/start.sh                   # 起（Ctrl+C 停），浏览器开 http://127.0.0.1:3080
+~/.feiyu/bin/doctor.sh                  # 体检
 ```
 
-- 走 [docs/04-deploy.md](04-deploy.md) 的 01–05 步：基础系统 → OneBot 客户端 → dsh 平台 → 记忆空库 → 聊天线接线。
-- 验收：QQ 发一句话有回复；`kill dsh-web && 重启` 后她还认得你（记忆连续）。
+- Windows 用 `powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes`，效果相同。
+- 默认**不需要服务器、不需要 QQ**；`~/.feiyu/.env` 至少填 `API_KEY / API_BASE / MODEL_MAIN` 三项。
+- 要 QQ 常驻 / 24/7 在线：有服务器的走 [04-deploy.md](04-deploy.md) **路线 B 的 01–05 步**（基础系统 → OneBot → 平台 → 记忆 → 聊天线）。
+- 验收：doctor 全绿；接入 QQ 后发一句话有回复，重启后她还认得你（记忆连续）。
 
 ## 第一张工单（1 小时）
 
@@ -58,15 +63,18 @@ bash install/08-superagent.sh && bash examples/weather/demo.sh --observe
 
 ## 搭自己的默认团队（半天）
 
-- 读 [TEAM.md](../TEAM.md) + [roles/](../roles/)：6 席位 = 主持/架构/调研/维修/发布（+可选视觉），席位是岗位不是进程。
-- 主持心跳：一条 `*/20 * * * *` cron 扇出（见 [adapters/](../adapters/)），做三件事——查信箱、看护中断会话、巡检生产。
+- 读 [TEAM.md](../../framework/TEAM.md) + [roles/](../../framework/roles/)：6 席位 = 主持/架构/调研/维修/发布（+可选视觉），席位是岗位不是进程。
+- 主持心跳：一条 `*/20 * * * *` cron 扇出（见 [adapters/](../../framework/adapters/)），做三件事——查信箱、看护中断会话、巡检生产。
 - 验收：值守跑通一晚，中断的会话被定向唤醒。
 
 ## 上手即踩的坑（我们替你踩过了）
 
 - 「改了没生效但日志无 error」：改 src 必须重编译（运行时加载编译产物）；部署后做**消费侧字节校验**（见 [docs/04-deploy.md](04-deploy.md) 附录）。
 - 服务器非交互 shell 的 `TZ` 是 UTC：一切时间窗显式带时区。
-- 会话定时任务每会话一条上限：调度走直写任务库（[adapters/zcode/](../adapters/)）。
+- 会话定时任务每会话一条上限：调度走直写任务库（[adapters/zcode/](../../framework/adapters/)）。
 - 免费池并发很浅：多会话同秒唤醒会互掐，心跳扇出要错峰。
+- Windows 本地部署：`python3` 这个命令名经常不存在（实为 `python` / `py -3`）——种子脚本已兜底，认三个名字。
+- `.ps1` 必须是 UTF-8 **带 BOM**：PowerShell 5.1 对无 BOM 文件按 ANSI 读，中文字符串一出现就炸引号。
+- PowerShell 5.1 给外部命令传参会吃掉内嵌双引号：`node -p 'a.split(".")'` 会变语法错误——改用无引号写法（如拆 `node -v` 的输出）。
 
 每一步的验收/回滚细节见 [docs/04-deploy.md](04-deploy.md)；出事故先查 [docs/05-runbook.md](05-runbook.md)。

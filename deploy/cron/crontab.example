@@ -13,4 +13,4 @@
 # 备份（每日；只增不改）
 20 3 * * *  @WORKSPACE@/bin/backup.sh >> @WORKSPACE@/logs/backup.log 2>&1
 
-# 注意：团队心跳（20 分钟）不在这里——它属于总架构那一条调度，见 docs/04-deploy.md 第 10 步。
+# 注意：团队心跳（20 分钟）不在这里——它属于总架构那一条调度，见 feiyu/docs/04-deploy.md 第 10 步。
