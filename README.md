@@ -184,6 +184,18 @@ Windows：`powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes`
 完整新手路线：[feiyu/docs/00-getting-started.md](feiyu/docs/00-getting-started.md)（第一条鱼 30 分钟 → 第一张工单 1 小时 → 搭团队半天）。
 部署两轨：[feiyu/docs/04-deploy.md](feiyu/docs/04-deploy.md)——**A 本地（默认）** / **B 服务器（可选）**，每步幂等、失败即停、自带验收。
 
+## 从 0 开始的服务器路线（24/7 常驻，四步成形）
+
+本地试玩之外，一条鱼要真正住进你的生活——QQ 常驻、断线自愈、每晚自己蒸馏记忆——需要一台服务器。从裸机到「她活了」，主干只有四步（十步全链见 [04-deploy](feiyu/docs/04-deploy.md)）：
+
+1. **装平台**：一台 1–2G 内存的 Linux 服务器，装 `@deepseek-ai/dsh` 平台全家桶，照 [cordis.patch.yml.example](deploy/cordis.patch.yml.example) 写配置——每个字段为什么这么写，都留着踩坑注释；
+2. **接 QQ**：起一个 OneBot 客户端（NapCat / Lagrange 任选；我们生产用自托管方案，细节不公开），QQ 扫码登录，反向 WS 指到 dsh 插件端口；
+3. **挂插件**：聊天线插件（收发消息、回合中插话、超时补发）+ 记忆图谱（[dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph)，空库起步即可）；
+4. **注入人格**：把 [persona-full.md](templates/persona-full.md) 填成她的角色卡挂上去——**她就活了**。
+
+**验收**：QQ 发一句话有回复；把她进程杀掉重启，她还认得你（记忆连续）。
+**之后**：常驻用 [systemd 模板](deploy/systemd/)，起停/体检/回滚见 [runbook](feiyu/docs/05-runbook.md)；要工单线、眼睛、出海 DM，按 04-deploy 第 06–10 步继续走。
+
 ## 四个真实案例
 
 数字都可核，写法统一：问题 → 做法 → 结果 → 证据 → 教训。
