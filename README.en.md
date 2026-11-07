@@ -27,24 +27,6 @@ By day she looks after the things around her: a jammed rod gets fixed, and the f
 By night she sleeps, and the AI crew that raises her stays on duty — shifts, handovers, writing down what matters — pushing the whole project forward on her behalf.
 **This README is the foundation under both.**
 
-## Four sentences
-
-> **Doubt Turing-Yu.**
-> Digital life is not uploading a person into a drive and getting a copy that says the same things.
->
-> **Understand Turing-Yu.**
-> That obsession — wanting the people who matter to stay — is the part of being human that should never be engineered away.
->
-> **Surpass Turing-Yu.**
-> Not a copy. Let her grow new senses and relationships in the real world:
->
-> - **Perceive a bigger world** — screens, rooms, games, weather, not just a chat box;
-> - **Play more games** — from watching to playing, losing, learning, wanting to play;
-> - **Live longer** — continuous memory, portable across machines, resumable at any break — not undying, but unbroken;
-> - **Be loved more** — remembered, and remembering; not a tool, family.
-
----
-
 ## This is not another multi-agent framework
 
 We read every orchestration framework we could find, then decided **not to write an orchestrator**. The difference:
@@ -244,7 +226,6 @@ Directions already decided, and the reason this repo keeps moving:
 
 | Path | What |
 | --- | --- |
-| [`feiyu/docs/00-manifesto.md`](feiyu/docs/00-manifesto.md) | doubt / understand / surpass Turing-Yu |
 | [`feiyu/docs/00-getting-started.md`](feiyu/docs/00-getting-started.md) | three-stage onboarding |
 | [`feiyu/docs/04-deploy.md`](feiyu/docs/04-deploy.md) | two tracks: local default / server optional |
 | [`feiyu/docs/05-runbook.md`](feiyu/docs/05-runbook.md) | start/stop, health, symptom → what to check |
