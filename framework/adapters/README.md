@@ -15,3 +15,8 @@
 - `teammate-watch.py` —— 队友中断看护：只读扫描 error/interrupted 且 todo 有 in_progress 的会话，30 分钟内同一会话只唤醒一次。
 
 两脚本均由生产脚本脱敏泛化：会话 ID / 工作区 / 服务器地址已参数化（`CHIEF_SESSION_ID`、`CHIEF_WORKSPACE`、`<server-host>`）——使用前把占位符换成你自己的值。
+
+## 扩编新席位
+
+- [SPAWN-PROPOSAL.md](SPAWN-PROPOSAL.md) —— 给 harness 官方的 **spawn 原语提案**（CLI 程序化开新会话，五原语扩成六）。
+- 没有它之前：桌面手动开新会话，或给已有空闲会话投换岗令——两种方式都按 [入队仪式](../bridges/ONBOARDING.md) 三步握手入编。
