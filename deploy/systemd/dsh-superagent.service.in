@@ -1,0 +1,18 @@
+[Unit]
+Description=dsh superagent (orchestrator + workers)
+After=network-online.target dsh-web.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+WorkingDirectory=@SUPERAGENT_HOME@
+EnvironmentFile=@ENV_FILE@
+Environment=DSH_SUPERAGENT_URL=http://127.0.0.1:@DSH_ORCH_PORT@
+ExecStart=@SUPERAGENT_HOME@/scripts/dsh-superagent --profile @PROFILE_SUPERAGENT@ start --foreground
+Restart=always
+RestartSec=5
+MemoryMax=@SUPERAGENT_MEMORY_MAX@
+
+[Install]
+WantedBy=default.target
