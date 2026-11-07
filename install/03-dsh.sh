@@ -45,10 +45,49 @@ DSH_WEB_PORT="${DSH_WEB_PORT:-3080}"
 SERVICE_USER="${SERVICE_USER:-feiyu}"
 PROF_DIR="$DSH_HOME/profiles/$PROFILE_WEB"
 UNIT=/etc/systemd/system/dsh-web.service
-NODE_BIN="$(command -v node || true)"
-DSH_BIN="$(command -v dsh || true)"
+NODE_BIN="${NODE_BIN:-$(command -v node || true)}"
+DSH_BIN="${DSH_BIN:-$(command -v dsh || true)}"
+NPM_BIN="${NPM_BIN:-$(command -v npm || true)}"
 HEAP_MAX_MB="${DSH_HEAP_MAX:-640M}"; HEAP_MAX_MB="${HEAP_MAX_MB%[Mm]}"
 MEMORY_MAX="${DSH_MEMORY_MAX:-896M}"
+
+# 版本探测不能只信 `dsh -v`：有的构建对 -v/--version/version 一律不输出，
+# 那样 SKIP 分支永不触发，于是每跑一次都重装一遍（装的是同一版，但动作是真的）。
+dsh_pkg_version() {   # $1 = npm 全局 root
+  local pj="$1/@deepseek-ai/dsh/package.json"
+  [ -f "$pj" ] || return 0
+  sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$pj" | head -1
+}
+
+dsh_installed_version() {
+  local out=""
+  if [ -n "$DSH_BIN" ]; then
+    out="$("$DSH_BIN" --version 2>/dev/null | head -1 || true)"
+    [ -n "$out" ] || out="$("$DSH_BIN" -v 2>/dev/null | head -1 || true)"
+    [ -n "$out" ] || out="$("$DSH_BIN" version 2>/dev/null | head -1 || true)"
+  fi
+  if [ -z "$out" ] && [ -n "$NPM_BIN" ]; then
+    local root; root="$("$NPM_BIN" root -g 2>/dev/null || true)"
+    [ -n "$root" ] && out="$(dsh_pkg_version "$root")"
+  fi
+  printf '%s' "$out"
+}
+
+# 混合 PATH（WSL / Git Bash）会解析到 Windows 版 node/npm：装出来的 dsh shim 在
+# systemd 里跑不起来（exec: node: not found）。宁可当场说清楚，也不留下一个"装成功"的假象。
+check_linux_bin() {
+  local name="$1" path="$2"
+  [ -n "$path" ] || return 0
+  case "$path" in
+    /mnt/*|*.exe|*.bat|*.cmd)
+      if [ "$DRY" = 1 ]; then
+        log "WARN: $name 解析到 $path —— 不是 Linux 二进制；真装会失败（dry-run 不拦）"
+      else
+        fatal "$name 解析到 $path —— 这不是 Linux 二进制（混合 PATH / WSL 的 Windows 目录）。请把 Linux 版 $name 放到 PATH 前面，或用 NODE_BIN/NPM_BIN 显式指定"
+      fi
+      ;;
+  esac
+}
 
 # 模板占位符 @NAME@ → env
 render_at() {
@@ -138,15 +177,43 @@ if [ "$DRY" = 0 ] && [ "$(id -u)" != 0 ]; then
 fi
 
 # --- 03.1 平台 -------------------------------------------------------------
-if [ -n "$DSH_BIN" ] && "$DSH_BIN" -v 2>/dev/null | grep -q "$DSH_VERSION"; then
+INSTMARK="$DSH_HOME/.installed-dsh-version"
+installed="$(dsh_installed_version)"
+[ -n "$installed" ] || installed="$( [ -f "$INSTMARK" ] && head -1 "$INSTMARK" || true )"
+
+if printf '%s' "$installed" | grep -qF "$DSH_VERSION"; then
   log "SKIP: dsh 已是 $DSH_VERSION"
 else
-  command -v npm >/dev/null 2>&1 || fatal "缺少 npm"
-  log "安装 @deepseek-ai/dsh@$DSH_VERSION"
-  run npm install -g "@deepseek-ai/dsh@$DSH_VERSION"
-  DSH_BIN="$(command -v dsh || true)"
+  log "已装版本：${installed:-未知}；目标 $DSH_VERSION"
+  if [ -z "$NPM_BIN" ]; then
+    if [ "$DRY" = 1 ]; then log "would: 需要 npm —— 当前 PATH 里没有（真装会 FATAL）"
+    else fatal "缺少 npm（Node >= 20 自带的那个）"; fi
+  else
+    check_linux_bin npm "$NPM_BIN"
+    log "安装 @deepseek-ai/dsh@$DSH_VERSION（npm: $NPM_BIN）"
+    if [ "$DRY" = 1 ]; then
+      log "would: $NPM_BIN install -g @deepseek-ai/dsh@$DSH_VERSION"
+    else
+      "$NPM_BIN" install -g "@deepseek-ai/dsh@$DSH_VERSION"
+      DSH_BIN="$(command -v dsh || true)"
+      # 安装后断言：落在**真的装上去的那一份**（npm 全局包的 package.json），不信 CLI 输出
+      npm_root="$("$NPM_BIN" root -g 2>/dev/null || true)"
+      got="$( [ -n "$npm_root" ] && dsh_pkg_version "$npm_root" || true )"
+      if [ "$got" != "$DSH_VERSION" ]; then
+        fatal "装完的版本是 '${got:-读不到}'，期望 $DSH_VERSION（npm root -g = ${npm_root:-?}）"
+      fi
+      mkdir -p "$DSH_HOME" && printf '%s\n' "$got" > "$INSTMARK"
+      log "已装并在 $npm_root 处核实：dsh $got"
+    fi
+  fi
 fi
-[ -n "$NODE_BIN" ] || fatal "找不到 node（Node >= 20）"
+
+if [ -z "$NODE_BIN" ]; then
+  if [ "$DRY" = 1 ]; then log "would: 需要 node（Node >= 20）—— 当前 PATH 里没有（真装会 FATAL）"
+  else fatal "找不到 node（Node >= 20）"; fi
+else
+  check_linux_bin node "$NODE_BIN"
+fi
 
 # --- 03.2 profile ----------------------------------------------------------
 log "profile 目录 $PROF_DIR"
