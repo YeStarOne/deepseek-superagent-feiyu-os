@@ -38,8 +38,18 @@ We read every orchestration framework we could find, then decided **not to write
 | Lifecycle | a task ends, the system ends | a **living thing**: continuous memory, senses and a body, people who care about her |
 | Evidence | demos and screenshots | four cases from 7×24 production, numbers checkable |
 | Footprint | the framework owns your process | only three things every harness can do: **mailbox, shift, project memory** |
+| Waking | not a problem — it all runs in one process | a **first-class concern**: `cli` poll / `hook` inject / `wake`, with bodies and the wake channel kept strictly apart |
 
 In one line: **others build a pipeline that makes agents work; we build a life that agents live — and the work gets done along the way.**
+
+The real dividing line is **not "multi-agent"** — the orchestration plugins out there (front desk / Planner / Worker, lead + shared board, adaptive topology) are all multi-agent.
+**The dividing line is whether you assume the one doing the work may be asleep.** Their unit of division is a role or a child node **inside one living instance**: shared context, a process that never dies.
+We assume seats go offline, machines get shut down, people walk away — which is why shifts, takeover, targeted wake, and "the report has to go ashore and find a human" exist at all.
+
+There is also a deliberately opposite choice. Some projects sell **zero extra model wake-ups** (adaptive topologies save tokens that way).
+We go the other way: **when it is time to wake someone, wake them** — the cost is not saved by *not* waking, it is controlled by **quantified gates**.
+Every message passes the referee first (strength / budget / de-duplication), and waking is tiered (light becomes a note, medium opens a ticket, only what deserves speech reaches the person).
+The right way to save tokens is "wake fewer of the wrong ones", not "be unwakeable".
 
 ## Why make her a superagent
 
@@ -116,6 +126,9 @@ Roles are fixed, processes are replaceable. Why a crew? Because the mechanism is
 
 One heartbeat: the captain wakes every 20 minutes, reads the mailbox and the board, wakes 1–2 seats (staggered, concurrency ≤2).
 Sub-minute supervision runs as **scripts** — scripts never sleep, sessions only judge.
+
+We are not the only orchestrator with a heartbeat (`dsh-my-go`'s lead is woken by one too — its README says the heartbeat wakes the lead and burns tokens).
+**The distinctive part is not that a heartbeat exists, but which way it points and what travels on it**: it fans out to **sessions that are asleep** — offline seats still get handed work — and **the wake channel carries one fixed sentence only; message bodies always travel the mailbox**. Even if the scheduler or its task store is inspected by a third party, not one line of conversation is in there.
 
 ## Mailbox protocol
 
@@ -210,6 +223,8 @@ The OS is not picky — **plug in any mature project and it grows into a system 
 | your own harness | one more crew member (five primitives, see Part I) |
 
 **The parts-library pattern: the OS never builds from scratch** — every new world is "adopt the most mature open-source project + write a thin Source/bridge". Stardew went in this way ([stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer)); Minecraft, mobile games and smart home follow the same road.
+
+The same holds one layer down, in the framework. We did not rewrite a rate limiter for the mailbox: `dsh-whale-post`'s `#gate` (pure-ack refusal / same-pair loop gate / chain depth / bucketed quota) is finer than ours, so we mount it through its interface instead. Both sides agree on one sentence: **a gate limits cost, not expression** — so the gate that limits *waking an agent* and the one that limits *waking a person* should shake hands, never merge.
 
 Two contracts only: the [Source template](examples/) (event line) and the [persona card template](templates/) (character line) — both support `--dry-run`.
 
