@@ -106,7 +106,16 @@ powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes
 | 09 | 看门狗 + health_check + 报表 | 03–08 | 杀进程 30 秒内被拉起 |
 | 10 | 团队网（信箱桥 + 心跳） | 08、09 | 两会话互通且互相叫醒 |
 
-配套：`deploy/systemd/*.service.in`（`@PLACEHOLDER@`）、`deploy/cron/crontab.example`、`deploy/cordis.patch.yml.example`。脚本契约见 [`install/README.md`](../../install/README.md)。
+配套：`deploy/systemd/*.service.in`、`deploy/cron/crontab.example`、`deploy/cordis.patch.yml.example`。脚本契约见 [`install/README.md`](../../install/README.md)。
+
+**两种占位符，两个消费者，别混**：
+
+| 位置 | 占位符 | 谁展开 | 没填会怎样 |
+| --- | --- | --- | --- |
+| `.service.in` / `crontab.example` | `@X@` | **安装脚本**（systemd 不认识 `@X@`，是惰性字符串） | 装前断言直接拒绝安装 |
+| `docs/` / `env.example` / `cordis.patch.yml.example` | `${X}` | **人**（cordis 的 `${}` 只是待填标记，dsh 不展开） | 看得出来，无害 |
+
+为什么不是全用 `${}`：`.service` 里的 `${X}` 会被 **systemd 运行时展开**（`man systemd.service`：未设则「if any」替换为空），crontab 里的会被 **sh** 展开——没填不报错，服务照常起、只是绑在空地址/空路径上。那正是"看起来成功了"。所以机器消费者一律用惰性 `@X@`，**装前断言**：模板里残留 `@[A-Z_]+@` 就拒绝安装。
 
 **从 A 迁到 B**：`.env` 和 `memory-data/` 打包带走 → 在服务器重跑种子（同一脚本）→ systemd 单元接管进程。配置不落地在仓库里，迁移不丢东西。
 

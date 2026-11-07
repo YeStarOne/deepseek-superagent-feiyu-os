@@ -17,6 +17,7 @@ install/NN-<name>.sh
   失败即停      set -euo pipefail；非 0 退出，不继续下一步
   日志          stderr，单行前缀 [NN]
   配置          一律从 env 读（见 ../env.example），脚本内不写死地址/路径
+  装前断言      模板里残留 `@[A-Z_]+@`（未填）→ 拒绝安装，退出码 5；不把空值带进 systemd/cron
 ```
 
 ## 列表
