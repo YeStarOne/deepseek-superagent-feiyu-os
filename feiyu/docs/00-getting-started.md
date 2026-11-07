@@ -54,10 +54,11 @@ bash install/local/seed.sh --yes        # 平台 + 记忆目录 + 起停/体检�
 ## 第一张工单（1 小时）
 
 ```bash
-bash install/08-superagent.sh && bash examples/weather/demo.sh --observe
+bash examples/weather/demo.sh --observe
 ```
 
 - 玩具源 `examples/weather`：一个只会「报告天气异常」的 Source，先把 observe→auto 全流程跑通。
+- 说明：真正的 superagent 编排器（工单面板/裁判/worker）目前随**服务器路线**部署（[04-deploy.md](04-deploy.md)，其脚本在服务器的 `~/dsh-superagent`，仓库不含二进制）；本地路线用上面的玩具源理解机制即可，`install/08-superagent.sh` 是服务器侧步骤，本地没有 sudo/systemd 就不要跑。
 - 验收：`observe` 档看到 would_accept → 切 auto → 一张真工单走完 **触发→裁判→工单→worker→出海 DM** 全链。
 - 线上真实数字（2026-11-07）：切 auto 首日 5 张工单，触发→派发 ≤7s，报告出海 4/4 送达（见 [docs/03-cases/](03-cases/)）。
 

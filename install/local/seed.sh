@@ -34,7 +34,10 @@ run() { if [ "$DRY" = 1 ]; then log "would: $*"; else "$@"; fi; }
 verify() {
   local fail=0
   if command -v node >/dev/null 2>&1; then log "verify ok: node $(node -v)"; else log "verify FAIL: node 缺失"; fail=1; fi
-  if command -v dsh >/dev/null 2>&1; then log "verify ok: dsh $(dsh -v 2>/dev/null | head -1)"; else log "verify FAIL: dsh 不可用"; fail=1; fi
+  if command -v dsh >/dev/null 2>&1; then
+    probe="$(dsh --version 2>/dev/null | head -1 || true)"
+    if [ -n "$probe" ] && [[ "$probe" != error:* ]]; then log "verify ok: dsh $probe"; else log "verify FAIL: dsh 假活（exit 0 但零输出/报错，见 M2）"; fail=1; fi
+  else log "verify FAIL: dsh 不可用"; fail=1; fi
   if [ -f "$FEIYU_HOME/.env" ]; then log "verify ok: .env 就位"; else log "verify FAIL: $FEIYU_HOME/.env 不存在"; fail=1; fi
   if [ -d "$FEIYU_HOME/memory-data" ]; then log "verify ok: memory-data 目录在"; else log "verify FAIL: memory-data 不在"; fail=1; fi
   return $fail
@@ -82,7 +85,14 @@ fi
 # --- A2 平台 -----------------------------------------------------------------
 log "A2 平台 @deepseek-ai/dsh@$DSH_VERSION"
 if command -v dsh >/dev/null 2>&1 && dsh -v >/dev/null 2>&1; then
-  log "SKIP: dsh 已安装（$(dsh -v 2>/dev/null | head -1)）；换版本：npm i -g @deepseek-ai/dsh@$DSH_VERSION"
+  # M2 活性探测：dsh CLI 在 Node 下可能 exit 0 但零输出/报错（bin.js 的 import.meta.main 守卫是 Deno/Bun 语义）——假活会让 dsh web 假装启动
+  probe="$(dsh --version 2>/dev/null | head -1 || true)"
+  if [ -z "$probe" ] || [[ "$probe" == error:* ]]; then
+    log "FATAL: dsh CLI 假活（exit 0 但零输出）——已知仓库级缺陷：bin.js 入口守卫 if (import.meta.main) 在 Node 下恒 false"
+    log "  处置：安装 Bun（https://bun.sh）后用 'bun dsh ...' 调用，或向上游确认 Node 版本兼容性"
+    exit 4
+  fi
+  log "SKIP: dsh 已安装且活性正常（$probe）；换版本：npm i -g @deepseek-ai/dsh@$DSH_VERSION"
 else
   run npm install -g "@deepseek-ai/dsh@$DSH_VERSION"
 fi
@@ -101,14 +111,16 @@ FEIYU_HOME="${FEIYU_HOME:-$HOME/.feiyu}"
 DSH_HOST="${DSH_HOST:-127.0.0.1}"
 DSH_PORT="${DSH_WEB_PORT:-3080}"
 DSH_HEAP_MB="${DSH_HEAP_MAX_MB:-640}"
+# 独立 DSH home：避开共享 ~/.dsh 里旧版本第三方插件的 required-plugin 兼容冲突
+export DSH_HOME="$FEIYU_HOME/dsh-home"
 export NODE_OPTIONS="--max-old-space-size=$DSH_HEAP_MB"
 exec dsh web --host "$DSH_HOST" --port "$DSH_PORT" --no-open
 EOF
 
   cat > "$FEIYU_HOME/bin/stop.sh" <<'EOF'
 #!/usr/bin/env bash
-# 停本地 dsh web（只匹配自己的进程）
-pkill -f "dsh web --host" && echo "stopped" || echo "no running dsh web found"
+# 停本地 dsh web（匹配串兼容 npm-shim / dsh 包装的进程）
+pkill -f "dsh web --host|dsh\.cmd|npm-shim" && echo "stopped" || echo "no running dsh web found"
 EOF
 
   cat > "$FEIYU_HOME/bin/doctor.sh" <<'EOF'
@@ -123,10 +135,11 @@ say_ok() { printf '  OK   %s\n' "$1"; ok=$((ok+1)); }
 say_bad() { printf '  FAIL %s\n' "$1"; bad=$((bad+1)); }
 
 if command -v node >/dev/null 2>&1 && [ "$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)" -ge 20 ]; then say_ok "node >= 20 在位"; else say_bad "node >= 20 在位"; fi
-if command -v dsh >/dev/null 2>&1 && dsh -v >/dev/null 2>&1; then say_ok "dsh 可用"; else say_bad "dsh 可用"; fi
+if command -v dsh >/dev/null 2>&1 && probe="$(dsh --version 2>/dev/null | head -1 || true)" && [ -n "$probe" ] && [[ "$probe" != error:* ]]; then say_ok "dsh 可用（$probe）"; else say_bad "dsh 可用（exit 0 但零输出/报错=假活，见 M2）"; fi
 if [ -f "$FEIYU_HOME/.env" ]; then say_ok ".env 就位"; else say_bad ".env 就位"; fi
 if touch "$FEIYU_HOME/memory-data/.probe" 2>/dev/null; then rm -f "$FEIYU_HOME/memory-data/.probe"; say_ok "memory-data 可写"; else say_bad "memory-data 可写"; fi
-if curl -sf -o /dev/null "http://$DSH_HOST:$DSH_PORT"; then say_ok "面板可连 $DSH_HOST:$DSH_PORT"; else say_bad "面板可连 $DSH_HOST:$DSH_PORT（没起就先 start.sh）"; fi
+# 面板配对锁阶段 401/403 是正常状态（等待 token 配对），不算 FAIL
+if curl -s -o /dev/null -w '%{http_code}' "http://$DSH_HOST:$DSH_PORT" | grep -qE '^(200|301|302|401|403)$'; then say_ok "面板可连 $DSH_HOST:$DSH_PORT"; else say_bad "面板可连 $DSH_HOST:$DSH_PORT（没起就先 start.sh）"; fi
 if ls "$FEIYU_HOME/memory-data" 2>/dev/null | grep -qv '.probe'; then say_ok "memory-data 有内容"; else say_bad "memory-data 还是空的（先完成 A3 记忆库初始化）"; fi
 
 printf '  —— %d 项通过，%d 项未过。未过的看 docs/04-deploy.md 对应步骤。\n' "$ok" "$bad"
