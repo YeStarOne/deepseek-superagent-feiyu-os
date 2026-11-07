@@ -1,7 +1,10 @@
-# install · 十步脚本
+# install · 部署脚本
 
+> **两条路**：
+> - **本地（默认）**：直接用 [`local/seed.sh`](local/seed.sh) / [`local/seed.ps1`](local/seed.ps1)——不需要服务器、不需要 QQ，约 30 分钟。
+> - **服务器（24/7，可选）**：下面的 NN 脚本，对应 [docs/04-deploy.md](../feiyu/docs/04-deploy.md) 路线 B。
+>
 > 规格先行：脚本可以换人写，契约不能换。
-> 每一步对应 [docs/04-deploy.md](../docs/04-deploy.md) 的同号章节。
 
 ## 契约
 

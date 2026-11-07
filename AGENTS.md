@@ -1,11 +1,16 @@
 # AGENTS.md · 本仓总纲
 
 > 任何进入本仓的会话（人写的、模型跑的、别人 fork 的）先读这一页。
-> 岗位细节看 `TEAM.md` 与 `roles/<seat>/AGENTS.md`；架构看 `docs/01-architecture.md`。
+> 岗位细节看 `framework/TEAM.md` 与 `framework/roles/<seat>/AGENTS.md`；架构看 `framework/docs/01-architecture.md`。
 
 ## 1. 这是什么仓
 
-开发期团队的工作仓：架构文档、默认团队定义、开发案例、部署包、模板。
+一个仓、两章内容：
+
+- **`framework/`** —— 泛用架构（superagent + 信箱协议 + harness 适配 + 默认团队定义）。**零家庭语境、零案例数字**，负责推广。
+- **`feiyu/`** —— 大肥鱼项目实录（宣言、部署、runbook、案例、生态实况）。承载全部故事，负责传播。
+- 根级共用：`install/`、`deploy/`、`templates/`、`env.example`、`examples/`、`docs/06-sanitize.md`。
+
 **实现仓私有**——真实角色的感官、身体、出口与家庭语境不在这里，也不要往这里搬。
 
 ## 2. 两套分工正交，别混
@@ -47,5 +52,5 @@ DONE 必须带路径与数字；ASK 15 分钟内要 ACK；任务重叠先 ASK，
 
 ## 7. 文档优先级
 
-`README.md`（人看） → `AGENTS.md`（会话看） → `docs/`（细节） → `roles/`（岗位）。
+`README.md`（人看） → `AGENTS.md`（会话看） → `framework/docs/`（架构与团队） → `framework/roles/`（岗位） → `feiyu/`（肥鱼实录）。
 改了行为就改文档，同一 PR 里改。

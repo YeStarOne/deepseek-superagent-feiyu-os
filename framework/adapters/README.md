@@ -2,7 +2,7 @@
 
 > 底座大家基本都用 deepseek harness（dsh）；「会话怎么被唤醒、怎么收消息、怎么被看护」做成可插拔协议，一个 harness 一个实现目录。我们跑通了两套。
 
-| 能力 | dsh 原生（`adapters/dsh/`） | ZCode 适配（`adapters/zcode/`，已生产验证） |
+| 能力 | dsh 原生（机制对照，实现在私有实现仓） | ZCode 适配（`adapters/zcode/`，已生产验证） |
 | --- | --- | --- |
 | 会话载体 | dsh-web 内 session（`onebot-*`） | ZCode CLI 会话（Reason Network 注册，`yestar/<名>`） |
 | 唤醒 | companion-life 60s poll + cron | RN automation / 直写 `tasks-index.sqlite`（见 `dev-shift-scheduler.py`） |
