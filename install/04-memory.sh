@@ -46,12 +46,12 @@ MEMORY_DATA_DIR="${MEMORY_DATA_DIR:-$WORKSPACE/memory-data}"
 PROFILE_WEB="${PROFILE_WEB:-web}"
 DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
 PROF_DIR="$DSH_HOME/profiles/$PROFILE_WEB"
-PYTHON_BIN="${PYTHON_BIN:-$(command -v python3 || echo python3)}"
+PYTHON_BIN="${PYTHON_BIN:-$(command -v python3 || command -v python || echo python3)}"
 MARK='# feiyu-install:04'
 
 render_cordis() {
   local src="$1" dst="$2"
-  python3 - "$src" "$dst" <<'PY'
+  "$PYTHON_BIN" - "$src" "$dst" <<'PY'
 import os, re, sys
 src, dst = sys.argv[1], sys.argv[2]
 text = open(src, encoding='utf-8').read()
@@ -90,7 +90,7 @@ verify() {
 
   # 引擎导出面（真实输出，用于写探针/排障）
   local entry
-  entry="$(python3 - "$MEMORY_KIT_DIR" <<'PY'
+  entry="$("$PYTHON_BIN" - "$MEMORY_KIT_DIR" <<'PY'
 import json, os, sys
 d = sys.argv[1]
 p = os.path.join(d, 'package.json')
@@ -195,13 +195,16 @@ else
   if [ "$DRY" = 1 ]; then
     log "would: 从 $CRON_SRC 渲染 night_memory / backup 两行并写入 crontab（标记 $MARK）"
   else
+    rendered="$(sed -e "s|@PYTHON_BIN@|$PYTHON_BIN|g" \
+        -e "s|@WORKSPACE@|$WORKSPACE|g" \
+        "$CRON_SRC" | grep -E 'night_memory|backup')"
+    left="$(printf '%s' "$rendered" | grep -oE '@[A-Z0-9_]+@' | sort -u | tr '\n' ' ' || true)"
+    if [ -n "$left" ]; then log "FATAL: cron 渲染后仍有未填占位符：$left（$CRON_SRC）"; exit 5; fi
     TMP_CRON="$(mktemp)"
     {
       crontab -l 2>/dev/null || true
       echo "$MARK"
-      sed -e "s|@PYTHON_BIN@|$PYTHON_BIN|g" \
-          -e "s|@WORKSPACE@|$WORKSPACE|g" \
-          "$CRON_SRC" | grep -E 'night_memory|backup'
+      printf '%s\n' "$rendered"
     } > "$TMP_CRON"
     crontab "$TMP_CRON"
     rm -f "$TMP_CRON"

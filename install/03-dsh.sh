@@ -62,13 +62,20 @@ render_at() {
     log "FATAL: 模板 $src 缺少 env：$missing"
     exit 4
   fi
+  # 装前断言：渲染完还有 @X@ 就拒绝安装（空值绝不带进 systemd 的 ${...}）
+  local left
+  left="$(printf '%s' "$out" | grep -oE '@[A-Z0-9_]+@' | sort -u | tr '\n' ' ' || true)"
+  if [ -n "$left" ]; then
+    log "FATAL: 渲染后仍有未填占位符：$left（模板 $src）"
+    exit 5
+  fi
   printf '%s\n' "$out" > "$dst"
 }
 
 # cordis 模板 ${NAME} → env；渲染后仍有 ${...} 就报错（不许半填）
 render_cordis() {
   local src="$1" dst="$2"
-  python3 - "$src" "$dst" <<'PY'
+  "$PYBIN" - "$src" "$dst" <<'PY'
 import os, re, sys
 src, dst = sys.argv[1], sys.argv[2]
 text = open(src, encoding='utf-8').read()

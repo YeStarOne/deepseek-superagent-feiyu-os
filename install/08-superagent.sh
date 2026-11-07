@@ -138,6 +138,8 @@ else
       if [ -z "$val" ]; then missing="$missing $key"; else out="${out//@$key@/$val}"; fi
     done
     [ -z "$missing" ] || fatal "模板缺 env：$missing"
+    left="$(printf '%s' "$out" | grep -oE '@[A-Z0-9_]+@' | sort -u | tr '\n' ' ' || true)"
+    if [ -n "$left" ]; then log "FATAL: 渲染后仍有未填占位符：$left（$SRC）"; exit 5; fi
     printf '%s\n' "$out" > "$UNIT"
     systemctl daemon-reload
     systemctl enable --now dsh-superagent
