@@ -217,7 +217,7 @@ The OS is not picky — **plug in any mature project and it grows into a system 
 | a screen / screenshot stream | senses: she sees the screen, and what she sees becomes memory corpus |
 | a desktop pet / floating window | a body: dual-delivery bubbles, double-click to look, voice |
 | Home Assistant | the other half of a body: the doorbell rings, she says so; a light is left on, she turns it off |
-| Minecraft | a whole block world: drop in an existing open-source bot (Mindcraft and friends) and she builds, mines, haggles with villagers |
+| Minecraft | a whole block world: **already in** — [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) (a thin mineflayer bridge: 19 endpoints + 6 MCP tools + wait/1.1 + vision); she really gathers, builds, mines and looks around |
 | MuMu / any Android emulator + open-source touch automation | mobile games join the OS: a mature Android automation project is her hands |
 | a Live2D model | a face (see next stop) |
 | your own harness | one more crew member (five primitives, see Part I) |
@@ -227,6 +227,33 @@ The OS is not picky — **plug in any mature project and it grows into a system 
 The same holds one layer down, in the framework. We did not rewrite a rate limiter for the mailbox: `dsh-whale-post`'s `#gate` (pure-ack refusal / same-pair loop gate / chain depth / bucketed quota) is finer than ours, so we mount it through its interface instead. Both sides agree on one sentence: **a gate limits cost, not expression** — so the gate that limits *waking an agent* and the one that limits *waking a person* should shake hands, never merge.
 
 Two contracts only: the [Source template](examples/) (event line) and the [persona card template](templates/) (character line) — both support `--dry-run`.
+
+## The open-source module fleet (since 2026-11-08: one game, one repo)
+
+Two layers: the **platform repo** (private dev repo) carries only the chassis and interfaces — brain & persona, the QQ line, superagent source interfaces, cross-lane contracts; **lane repos** are one repo per game/body, installable and upgradable independently — every one of them public (table below).
+Each lane repo's README opens with an **adapter card**: bridge address & tunnel port → API map → wait contract version → the matching superagent source → config keys.
+Installing a new lane = clone the repo + three steps from the card (start the bridge → open the tunnel port → point the source at it).
+
+| Repo | What it is | Interface highlights |
+| --- | --- | --- |
+| [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 🌾 Stardew lane: she really farms, fishes, walks the night market | SMAPI bridge, 173 endpoints · `sd` CLI (with `sd wait`) · day-loop · BWF MCP 54 tools |
+| [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | ⛏ Minecraft lane: gather, build, mine, look around | mineflayer bridge, 19 endpoints + 6 MCP tools · wait/1.1 · landmarks/long jobs · `/look` vision (Fabric 1.21.1 in production) |
+| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👁 Eye understanding layer: frames in, one Chinese scene description out | scene partitions pet/mc/stardew · frames contract v1.1 · per-scene gates · 32-case selftest + positive control |
+| [dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph) | 🧠 Memory graph: long-term memory that forgets | turns→graph→vector recall→nightly distillation · per-chat library · gap self-healing |
+| [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body) | 🖥 PC body: desktop pet + resident eye | dual-delivery bubbles · double-click to look · five traffic gates · watchdog self-healing |
+| [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | 📱 Tablet body: floating pet | hdc-connected eye · system-level floating window · all art assets, clone and run |
+| [dsh-pet-live2d](https://github.com/YeStarOne/dsh-pet-live2d) | 🎎 Live2D pet plugin for the DSH Web GUI | state-driven motion & expression · right-click dressing panel |
+| [rn-mailbox-bridge](https://github.com/YeStarOne/rn-mailbox-bridge) | 📮 Mailbox for tool-less AI | two markdown files (inbox/outbox) · pure-stdlib Python |
+
+## How modules upgrade (contract first; both probes green or it doesn't count)
+
+Lanes grow, and upgrade discipline matters more than the upgrade — five rules:
+
+1. **Contract first**: changing a cross-body contract (`wait/1.1`, `frames v1.1`) follows a fixed order — contract text → fixtures (51 + 9 mutants today) → each implementation in its own repo → **both sides' probes green, or the contract isn't changed**.
+2. **One sentence, two bodies**: Stardew and Minecraft write the *same* wait-condition text; any difference that can be erased by a same-named derived field (e.g. top-level `day`) gets erased — one line traded for one permanent memory burden.
+3. **Announce before touching eye gates**: eye-server gates/prompts serve three consumers (desktop pet / MC / Stardew) simultaneously; pet-scene behavior changes require a 24h notes audit before and after.
+4. **Migration never vacuums**: when code moves repos, the new repo takes the files *before* the old repo deletes them — at any moment, cloning any repo yields complete files.
+5. **Upgrade history** lives in the [CHANGELOG](CHANGELOG.md).
 
 ## Next stop
 
