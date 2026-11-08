@@ -40,9 +40,9 @@ WORKSPACE="${WORKSPACE:-$HOME/work}"
 PYTHON_BIN="${PYTHON_BIN:-$(command -v python3 || echo python3)}"
 SERVICE_USER="${SERVICE_USER:-feiyu}"
 RN_SESSION="${RN_SESSION:-host}"
-RN_BRIDGE_HOME="${RN_BRIDGE_HOME:-$WORKSPACE/rn-mailbox-bridge}"
+RN_BRIDGE_HOME="${RN_BRIDGE_HOME:-$WORKSPACE/feiyuos-mailbox-bridge}"
 RN_HEARTBEAT_MIN="${SHIFT_INTERVAL_MIN:-20}"
-UNIT=/etc/systemd/system/rn-mailbox-bridge.service
+UNIT=/etc/systemd/system/feiyuos-mailbox-bridge.service
 MARK='# feiyu-install:10'
 
 verify() {
@@ -56,13 +56,13 @@ verify() {
     else log "verify FAIL: relay 不可达 $RN_RELAY"; fail=1; fi
   fi
 
-  if systemctl is-active --quiet rn-mailbox-bridge 2>/dev/null; then
-    log "verify ok: rn-mailbox-bridge.service active"
+  if systemctl is-active --quiet feiyuos-mailbox-bridge 2>/dev/null; then
+    log "verify ok: feiyuos-mailbox-bridge.service active"
   else
-    log "verify FAIL: rn-mailbox-bridge.service 未 active"; fail=1
+    log "verify FAIL: feiyuos-mailbox-bridge.service 未 active"; fail=1
   fi
   log "verify: 最近日志"
-  journalctl -u rn-mailbox-bridge -n 12 --no-pager 2>/dev/null | sed 's/^/  | /' >&2 || true
+  journalctl -u feiyuos-mailbox-bridge -n 12 --no-pager 2>/dev/null | sed 's/^/  | /' >&2 || true
 
   if crontab -l 2>/dev/null | grep -qF "$MARK"; then
     log "verify ok: 心跳 cron 已装（每 ${RN_HEARTBEAT_MIN} 分钟）"
@@ -90,7 +90,7 @@ if [ -z "${RN_RELAY:-}" ]; then
 fi
 
 # --- 10.1 信箱桥 -----------------------------------------------------------
-BRIDGE_REPO="${RN_BRIDGE_REPO:-https://github.com/YeStarOne/rn-mailbox-bridge.git}"
+BRIDGE_REPO="${RN_BRIDGE_REPO:-https://github.com/YeStarOne/feiyuos-mailbox-bridge.git}"
 if [ -d "$RN_BRIDGE_HOME/.git" ]; then
   log "更新信箱桥"
   if [ "$DRY" = 1 ]; then log "would: git -C $RN_BRIDGE_HOME pull --ff-only"
@@ -105,7 +105,7 @@ if [ -f "$UNIT" ]; then
   log "SKIP: $UNIT 已存在"
 else
   if [ "$DRY" = 1 ]; then
-    log "would: 写 $UNIT 并 systemctl enable --now rn-mailbox-bridge"
+    log "would: 写 $UNIT 并 systemctl enable --now feiyuos-mailbox-bridge"
   else
     cat > "$UNIT" <<EOF
 [Unit]
@@ -129,7 +129,7 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
     systemctl daemon-reload
-    systemctl enable --now rn-mailbox-bridge
+    systemctl enable --now feiyuos-mailbox-bridge
   fi
 fi
 
