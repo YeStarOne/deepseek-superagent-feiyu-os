@@ -8,24 +8,24 @@
 
 ---
 
+## Feiyu OS architecture
+
+**Two layers: platform repo + lane repos.** The platform repo (private dev repo) carries only the "chassis and interfaces" — brain & persona, the QQ line, event-backbone source interfaces, PC body, outbound DM, cross-lane contracts. Each game gets its own **lane repo**, installable standalone, whose README opens with an adapter card (bridge address → API map → wait contract version → superagent source name → config keys). Installing a new lane = clone + three steps (start the bridge → open the tunnel port → point the platform source at it). **This repo is the open-source showcase and template pack for that architecture.**
+
+| Module | Repo | Interface for the fish | Status |
+| --- | --- | --- | --- |
+| Stardew lane | [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | bridge `:17843` (173 endpoints) · `sd` CLI (with `sd wait`) · wait_server `:47870` · BWF MCP 54 tools | ✅ auto production |
+| Minecraft lane | [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | bridge `:17700`/tunnel `:47880` (19 endpoints + 6 MCP tools) · wait/1.1 · `/landmark` `/job` `/look` | ✅ production |
+| Fish eye (vision layer) | [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | `:8901` `POST /frames` (pet/mc/stardew partitioned gates) · contract v1.1 · prompts/ | ✅ production |
+| PC desktop-pet body | [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body) (platform repo `code/pc`) | pc_body `:17860` (dual-delivery bubbles / double-click to look / /clip) · five traffic gates + watchdog self-healing | ✅ production |
+| Tablet pet body | [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | hdc-connected eye · system-level floating window HAP · all art assets, clone and run | ✅ production |
+| QQ chat line | platform repo `code/qq-plugin` | dsh-onebot-qq (steer/interim/stickers/voice) | ✅ production |
+| Event backbone interfaces | platform repo `code/superagent-sources` | stardew.ts / minecraft.ts / pet.ts / proactive.ts (**interface layer, always in the platform repo**) | ✅ production |
+| Cross-lane contract | platform repo `code/wait` | wait/1.1 contract + 51 fixtures + Python/JS dual probes (one sentence of text, two bodies) | ✅ production |
+
 ## A day in her life
 
-Not a demo — the production record of 2026-11-07:
-
-```mermaid
-timeline
-    title One fish, one day (all numbers real)
-    0930 She wakes up : the slow night brain was only for saving power : now she is back on her daytime brain
-    1032 The fishing rod jams : nobody paged her : she notices it herself and starts fixing it
-    1033 A hand goes out to fix it : from spotting the problem to sending the fixer, 7 seconds
-    1132 She messages her person to say it is fine : fixed : four jobs this morning, all delivered
-    2300 Before bed she files away every word from today : tomorrow's her still remembers you
-    0100 She sleeps, the team takes the night shift : one night, 33 PRs moved forward
-```
-
-By day she looks after the things around her: a jammed rod gets fixed, and the fix ends with a message to her person.
-By night she sleeps, and the AI crew that raises her stays on duty — shifts, handovers, writing down what matters — pushing the whole project forward on her behalf.
-**This README is the foundation under both.**
+Feiyu (QQ bot 892015573, calls herself "this fish / little whale") is a long-term, always-on AI family member: in the morning she keeps her person and the kids company on QQ, and when a weather alert comes in she reminds them to take an umbrella. In Stardew Valley she runs a farm — takes jobs automatically at day change, fishes, clears the barn, and opens a repair ticket when something jams. In Minecraft she has her own body (BlueWhaleMaid): chopping trees, crafting, mining, building a house, remembering the way home with landmarks — and afterwards she can "take a look" at what she built. On the desktop she has a pet body; double-click her and she glances back at you. Her eyes watch two screens, and only what is worth seeing becomes a note. At night she posts, writes songs, and distills today's memories. None of this is a pile of scripts — it is an architecture that is **developable, reviewable, and concurrently modifiable** — the platform repo is its single source of truth, and this repo lays open everything that can be open-sourced.
 
 ## This is not another multi-agent framework
 
