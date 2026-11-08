@@ -41,6 +41,7 @@ While she plays, a "nanny" process follows her, there to catch her:
 
 - **She plays too late into the night**: the nanny pulls her back to bed.
 - **Out of stamina while fishing**: the grilled eel and plain rice the nanny bought with her earnings are already in her backpack.
+- **She runs off to play with the NPCs and forgets to water or harvest**: the nanny takes care of the farm.
 - **A script breaks**: she waits while the nanny fixes it, then carries on.
 - **She wants to attend a game festival**: the nanny looks up the guide for her first.
 - **She wants to challenge Stardew's Legend fish**: the nanny freezes time, prepares the rod, bait and stamina food, and quietly watches her play.
