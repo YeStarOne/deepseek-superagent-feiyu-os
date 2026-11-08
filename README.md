@@ -8,24 +8,24 @@
 
 ---
 
+## 肥鱼 OS 总体架构
+
+**平台仓 + 车道仓两层**：平台仓（私有开发仓）只装"底盘与接口"（鱼脑、QQ 线、事件底盘接口、PC 身体、出海、跨车道契约）；每个游戏一条**车道仓**，可单独安装，README 顶部带"接入卡"（桥地址 → API 一览 → wait 契约版本 → superagent source 名 → config 键）。装一个新车道 = 克隆 + 三步（起桥 → 打隧道口 → 平台仓 source 指向它）。**本仓是这套架构的开源橱窗与模板包。**
+
+| 模块 | 仓库 | 对鱼鱼的接口 | 状态 |
+| --- | --- | --- | --- |
+| 星露谷车道 | [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 桥 `:17843`（173 端点）· `sd` CLI（含 `sd wait`）· wait_server `:47870` · BWF MCP 54 工具 | ✅ auto 生产 |
+| 我的世界车道 | [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | 桥 `:17700`/隧道 `:47880`（19 端点 + MCP 6 工具）· wait/1.1 · `/landmark` `/job` `/look` | ✅ 生产 |
+| 鱼眼（视觉理解层） | [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | `:8901` `POST /frames`（pet/mc/stardew 三分区闸）· 契约 v1.1 · prompts/ | ✅ 生产 |
+| PC 桌宠身体 | 公开仓 [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body)（平台仓 `code/pc`） | pc_body `:17860`（pet_say 双投递/双击看一眼//clip）· 五道护栏 + 看门狗自愈 | ✅ 生产 |
+| 平板桌宠身体 | 公开仓 [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | hdc 直连眼睛 · 系统级悬浮窗 HAP · 全美术资源 clone 即跑 | ✅ 生产 |
+| QQ 聊天线 | 平台仓 `code/qq-plugin` | dsh-onebot-qq（steer/interim/表情/语音） | ✅ 生产 |
+| 事件底盘接口 | 平台仓 `code/superagent-sources` | stardew.ts / minecraft.ts / pet.ts / proactive.ts（**接口层，永远在平台仓**） | ✅ 生产 |
+| 跨车道契约 | 平台仓 `code/wait` | wait/1.1 契约 + 51 夹具 + Python/JS 双实现探针（两身体同一段文字） | ✅ 生产 |
+
 ## 她的一天
 
-不是 demo 流程，是 2026-11-07 的真实生产记录：
-
-```mermaid
-timeline
-    title 一条鱼的一天（全部真实）
-    0930 她醒了 : 夜里为省电用慢脑子 : 现在换回白天的大脑
-    1032 鱼竿卡住了 : 没有人喊她 : 她自己发现，自己开工
-    1033 修竿的分身出动了 : 从发现问题到派人修，只用 7 秒
-    1132 给主人发消息报平安 : 修好了 : 一上午 4 件事全部办妥
-    2300 睡前把今天聊过的每句话记进心里 : 明天的她还认得你
-    0100 她睡着了，团队上夜班 : 一夜替她推进了 33 个 PR
-```
-
-白天，她自己照看着身边的一切：鱼竿坏了自己修，修完给主人发消息；
-夜里她睡着了，养她的那支 AI 团队还在值班——轮班、交接、把重要的事记下来，替她把整个项目往前推。
-**这篇 README 讲的就是这两件事的底座。**
+鱼鱼（QQ bot 892015573，自称"本鱼/小鲸鱼"）是一个长期在线的家庭 AI 成员：早上在 QQ 上陪主人和小主人聊天，看到天气提醒会叮嘱穿伞；星露谷里她经营农场——换日自动接单、钓鱼、清仓，卡住了自己开工单修；切到我的世界，她有自己的身体（BlueWhaleMaid），会砍树、合成、挖矿、盖房，用地标记住回家的路，干完活还能"看一眼"自己盖得怎么样；桌面上她有桌宠身体，双击她会看你一眼；她的眼睛看着两块屏幕，值得看的才写进笔记；夜里她发说说、写歌、蒸馏今天的记忆。所有这些不是一个个脚本，而是一套**可开发、可评审、可并发改造**的架构——平台仓就是它的唯一事实源，本仓把能开源的全部摊开给你。
 
 ---
 
