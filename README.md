@@ -222,7 +222,7 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 | 屏幕/截图流 | 感官：看得见屏幕，看见的笔记自动变成记忆语料 |
 | 桌宠/悬浮窗 | 身体：气泡双投递、双击看一眼、语音说话 |
 | Home Assistant | 身体的另一半：门铃响了她说一声，灯忘了关她自己关 |
-| Minecraft | 一整个方块世界：现成的开源 bot 项目（Mindcraft 这类）丢进来，她就能进去搭房子、挖矿、跟村民砍价 |
+| Minecraft | 一整个方块世界：**已经进来了**——[feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft)（mineflayer 薄桥：19 端点 + MCP 6 工具 + wait/1.1 + 视觉），她真的在里面采集、盖房、挖矿、看世界 |
 | MuMu / 安卓模拟器 + 开源触控自动化 | 手游全线入 OS：成熟的安卓自动化项目就是她的手，什么手游都能玩 |
 | Live2D 模型 | 一张脸（见下一站） |
 | 你自己的 harness | 一位船员（五个原语接入，见上章） |
@@ -241,6 +241,34 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 **玩家永远只有她一个，但撑着这个世界的，是一整个团队。** Minecraft、MuMu 手游进来，走的是同一条路：先有主持把世界架起来，她再进去玩。
 
 接法只有两个契约：[Source 模板](examples/)（事件线）和[人设卡模板](templates/)（人格线）——模板都带 `--dry-run`。
+
+## 开源模块全家福（2026-11-08 起：一个游戏一个仓）
+
+仓库分两层：**平台仓**（私有开发仓）只装底盘与接口——鱼脑与人格、QQ 线、superagent source 接口、跨车道契约；
+**车道仓**一个游戏/身体一个仓，可单独安装、单独升级，本节表格里全部公开。
+每个车道仓 README 顶部有一张**接入卡**：桥地址与隧道口 → API 一览 → wait 契约版本 → 对应 superagent source → config 键。
+装一个新车道 = 克隆仓库 + 按卡三步（起桥 → 打隧道口 → source 指向它）。
+
+| 模块仓 | 它是什么 | 接口亮点 |
+| --- | --- | --- |
+| [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 🌾 星露谷车道：她真的在种地、钓鱼、逛夜市 | SMAPI 桥 173 端点 · `sd` CLI（含 `sd wait`）· day-loop · BWF MCP 54 工具 |
+| [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | ⛏ Minecraft 车道：采集、盖房、挖矿、看世界 | mineflayer 桥 19 端点 + MCP 6 工具 · wait/1.1 · 地标/长任务 · `/look` 视觉（Fabric 1.21.1 生产） |
+| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👁 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
+| [dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph) | 🧠 记忆图谱：会遗忘的长期记忆 | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 |
+| [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body) | 🖥 PC 身体：桌面桌宠 + 常驻眼睛 | 气泡双投递 · 双击看一眼 · 五道流量护栏 · 看门狗自愈 |
+| [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | 📱 平板身体：悬浮看板娘 | hdc 直连眼睛 · 系统级悬浮窗 · 全美术资源 clone 即跑 |
+| [dsh-pet-live2d](https://github.com/YeStarOne/dsh-pet-live2d) | 🎎 Web GUI 的 Live2D 桌宠插件 | 跟随会话状态换动作表情 · 右键面板换装 |
+| [rn-mailbox-bridge](https://github.com/YeStarOne/rn-mailbox-bridge) | 📮 给无工具 AI 的信箱桥 | 双 markdown 文件（inbox/outbox）· 纯 stdlib Python |
+
+## 模块怎么升级（契约先行，双侧 probe 全绿才算数）
+
+车道会长大，升级纪律比升级本身重要——五条：
+
+1. **契约先行**：改跨身体契约（`wait/1.1`、`frames v1.1` 这类）顺序固定——先改契约正文 → 加夹具（现在 51 条 + 9 变异体）→ 两个实现各自仓里改 → **双侧 probe 全绿才算契约成立**。
+2. **一段文字两身体通用**：星露谷与 Minecraft 的 wait 条件写同一段文字；能靠两边各派生同名字段（如顶层 `day`）消掉的差异，就消掉——一行换一次永久记忆负担。
+3. **眼睛动闸先打招呼**：eye-server 的闸逻辑/prompts 有三个消费方（桌宠/MC/星露谷）都挂着；pet 场景行为改动前后必须跑 24h notes 对账。
+4. **迁移不真空**：实现搬家时先让新仓接住文件，主仓再删——任何时刻 clone 任一仓都拿得到完整文件。
+5. **升级记录**看 [CHANGELOG](CHANGELOG.md)。
 
 ## 下一站
 
