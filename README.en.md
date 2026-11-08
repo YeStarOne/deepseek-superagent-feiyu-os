@@ -111,6 +111,41 @@ flowchart TB
 | L2 shift | who advances when nobody is watching | one heartbeat fan-out, targeted wake, watch, handover |
 | L3 project memory | long context is not memory | AGENTS / HANDOFF / rolling plan / decision log |
 
+## Mailbox and waking: the part nobody else has
+
+Common frameworks assume sessions are always on and waiting to be called. Ours are independent processes that **fall asleep at any time**. So the mailbox here is not an inbox — it is **the only thing that can wake a sleeping teammate**, and it is the part of the system others simply do not have.
+
+**How many different things can wake one session** (every row runs in production):
+
+| Wake source | Real example | Who wakes |
+| --- | --- | --- |
+| ⌨️ A human | you type a line into the chat box — the most common kind, and the only kind others have | her |
+| 👥 A teammate session | the captain wakes 1–2 seats every 20 minutes; Reason Network (RN) delivers a follow-up straight into the session — "the plugin wakes me directly", she wrote in her own log | any seat |
+| ⏰ Scheduled tasks | **one session can carry several, on different clocks**: a 20-minute heartbeat, a 5-minute game patrol, an hourly reconciliation, a 09:30 daily kickoff | any seat |
+| 🌾 In-game mechanics | a new day in Stardew → the event line wakes her to send a "new day" brief; a stuck rod / fishing anomaly → a repair ticket on the spot, a DM when it is fixed | her + the repair worker |
+| 💬 IM failures | the QQ fish goes silent or errors → the surgeon session is woken to check the link | surgeon |
+| 🐙 GitHub | a new PR → the navigator is woken to review; CI red → the surgeon; a merge landed → the captain reconciles | navigator / surgeon |
+| 🛡️ Interruption watch | any session whose last turn ended in error / interrupted because of **network jitter / rate limiting / 3008**, while its todo still has an in_progress item → the watch script wakes it within 30 minutes to resume from the breakpoint | that session itself |
+| 🌐 Across devices · across harnesses | the cloud fish is woken by the eyes/pet on the PC; a ZCode session wakes a dsh session; Windows, a cloud server and another machine sit in the same mailbox | any session on any machine |
+
+That last row is the nature of the whole thing: **the mailbox is bound to neither a machine nor a harness.** An address is a person / session in the team — not a process, not a port, not a framework-specific session id. So an event on one machine can wake a person on another, a ZCode session can wake a dsh session, a script written in Cursor can wake a session in Claude Code. Any harness implementing the five primitives (identity / inject / wake / send / presence) can join — and can be woken across the boundary.
+
+The interruption row hides a judgement: **a network glitch that cuts off inference is not a failed task.** The link wobbled or upstream returned 3008 — her work is still exactly where she left it. Waking her to carry on is far cheaper than making a human explain it all over again. The watch script checks only two things: did the last turn end abnormally, and is there still an unfinished item in the todo. Both true → targeted wake; same person not disturbed twice within 30 minutes.
+
+This is "autonomous activation": **she does not have to remember to look; things come knocking.** Nobody has to tell her a Stardew day has turned, nobody has to notice the rod is broken, and when QQ goes down she knows before you do.
+
+But waking is not free, so wakes are graded — and the grading is not a hand-written switch, it is the **DeepSeek SuperAgent machinery itself**: every message first passes the judge (Eval) through the strength / budget / dedup gates (run in observe mode until reconciled, then switched to auto), and whatever grade the judge returns is how far the wake goes:
+
+- light → a quiet note: look, then leave; she is not disturbed;
+- medium → a ticket: a worker handles it asynchronously and reports when done;
+- worth speaking → disturb a human.
+
+The judge is the same one that opens tickets: **a wake is simply the strongest verdict it can return.**
+
+One hard rule: **bodies and the wake channel are strictly separated.** The wake channel carries one fixed sentence ("you have new mail"); the actual message body always travels the mailbox. Even if the scheduler or its task store is inspected by a third party, not one line of conversation is in there.
+
+The channel itself has three grades, chosen by what the harness can do: **CLI polling** (universal), **hook injection** (riding the harness event stream), and **wake** (inserting a manual run). All three only wake; none of them carries the words.
+
 ## The six-seat crew
 
 Roles are fixed, processes are replaceable. Why a crew? Because the mechanism is sea work: **a shift is a watch roster, a mailbox is a drifting bottle, a ticket is a logbook, going ashore is reporting to the land.**
