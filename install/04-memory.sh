@@ -122,7 +122,7 @@ PY
 if [ "$VERIFY" = 1 ]; then verify; exit $?; fi
 
 # --- 04.1 kit --------------------------------------------------------------
-PLUGIN_REPO="${MEMORY_PLUGIN_REPO:-https://github.com/YeStarOne/dsh-plugin-memory-graph.git}"
+PLUGIN_REPO="${MEMORY_PLUGIN_REPO:-https://github.com/YeStarOne/feiyuos-memory-graph.git}"
 PLUGIN_REF="${MEMORY_PLUGIN_REF:-main}"
 if [ -d "$MEMORY_KIT_DIR/.git" ]; then
   log "更新 kit（$PLUGIN_REF）"
