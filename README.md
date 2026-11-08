@@ -65,7 +65,7 @@ superagent 的工单机制把她拆成**同时在线的多处**，三条线各�
 | --- | --- | --- |
 | 💬 **聊天线**（全双工） | 她本人，直连秒回 | 你发消息她秒回；**回合没走完你还能插话**，插话直达不用等 |
 | 📋 **事件线**（工单） | worker 们，异步并行 | 鱼竿停摆她自己修、游戏停摆她自己救——不用你喊，修完 DM 报平安 |
-| 👁️ **感知线**（眼睛/桌宠） | 7×24 接收，裁判把关 | 桌宠无时无刻在收信息，但**只有过闸的才激活她**——普通的看一眼只落成一条安静笔记，重要的才叫醒她开工单 |
+| 👀 **感知线**（眼睛/桌宠） | 7×24 接收，裁判把关 | 桌宠无时无刻在收信息，但**只有过闸的才激活她**——普通的看一眼只落成一条安静笔记，重要的才叫醒她开工单 |
 
 中间把关的就是裁判（Eval）：每条信息按规则评估强度、查预算、抑制重复——**不过闸的永远不打扰她，过了闸的才开工单**。切 auto 前先 observe 跑几天对账（[案例二](feiyu/docs/03-cases/02-observe-before-auto.md)），保证她"该醒的时候醒，不该醒的时候装睡"。
 
@@ -253,7 +253,7 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 | --- | --- | --- |
 | [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 🌾 星露谷车道：她真的在种地、钓鱼、逛夜市 | SMAPI 桥 173 端点 · `sd` CLI（含 `sd wait`）· day-loop · BWF MCP 54 工具 |
 | [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | ⛏ Minecraft 车道：采集、盖房、挖矿、看世界 | mineflayer 桥 19 端点 + MCP 6 工具 · wait/1.1 · 地标/长任务 · `/look` 视觉（Fabric 1.21.1 生产） |
-| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👁 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
+| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👀 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
 | [dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph) | 🧠 记忆图谱：会遗忘的长期记忆 | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 |
 | [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body) | 🖥 PC 身体：桌面桌宠 + 常驻眼睛 | 气泡双投递 · 双击看一眼 · 五道流量护栏 · 看门狗自愈 |
 | [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | 📱 平板身体：悬浮看板娘 | hdc 直连眼睛 · 系统级悬浮窗 · 全美术资源 clone 即跑 |

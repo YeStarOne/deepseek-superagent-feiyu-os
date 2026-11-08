@@ -63,7 +63,7 @@ The work-order mechanism splits her into **several places online at once**, none
 | --- | --- | --- |
 | 💬 **Chat line** (full duplex) | her, directly | she answers at once; **you can cut in mid-turn**, and it lands immediately |
 | 📋 **Event line** (tickets) | workers, async | a stalled rod, a broken game — she fixes it, then DMs you |
-| 👁️ **Perception line** (eyes / desktop pet) | 24/7 intake, referee gates | the pet receives constantly, but **only what passes the gate activates her** — a glance becomes a quiet note, only what matters wakes her |
+| 👀 **Perception line** (eyes / desktop pet) | 24/7 intake, referee gates | the pet receives constantly, but **only what passes the gate activates her** — a glance becomes a quiet note, only what matters wakes her |
 
 The gate is the referee (Eval): every message is scored against rules, budget-checked, de-duplicated. Nothing passes, nothing disturbs her. Before switching to `auto`, we run in `observe` for days and reconcile (see [case 2](feiyu/docs/03-cases/02-observe-before-auto.md)).
 
@@ -238,7 +238,7 @@ Installing a new lane = clone the repo + three steps from the card (start the br
 | --- | --- | --- |
 | [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 🌾 Stardew lane: she really farms, fishes, walks the night market | SMAPI bridge, 173 endpoints · `sd` CLI (with `sd wait`) · day-loop · BWF MCP 54 tools |
 | [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | ⛏ Minecraft lane: gather, build, mine, look around | mineflayer bridge, 19 endpoints + 6 MCP tools · wait/1.1 · landmarks/long jobs · `/look` vision (Fabric 1.21.1 in production) |
-| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👁 Eye understanding layer: frames in, one Chinese scene description out | scene partitions pet/mc/stardew · frames contract v1.1 · per-scene gates · 32-case selftest + positive control |
+| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👀 Eye understanding layer: frames in, one Chinese scene description out | scene partitions pet/mc/stardew · frames contract v1.1 · per-scene gates · 32-case selftest + positive control |
 | [dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph) | 🧠 Memory graph: long-term memory that forgets | turns→graph→vector recall→nightly distillation · per-chat library · gap self-healing |
 | [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body) | 🖥 PC body: desktop pet + resident eye | dual-delivery bubbles · double-click to look · five traffic gates · watchdog self-healing |
 | [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | 📱 Tablet body: floating pet | hdc-connected eye · system-level floating window · all art assets, clone and run |
