@@ -7,8 +7,8 @@
 仓库分层落地：一个游戏一个仓，可单独安装。
 
 ### feiyu/（大肥鱼项目，传播向）
-- 新开源两仓：[feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft)（Minecraft 车道：mineflayer 桥 19 端点 + MCP 6 工具 + wait/1.1 + 地标/长任务 + `/look` 视觉，Fabric 1.21.1 生产）、[feiyu-eye](https://github.com/YeStarOne/feiyu-eye)（眼睛理解层：scene 三分区 pet/mc/stardew + frames 契约 v1.1，32 用例自测 + 阳性对照）
-- [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) 收编 `/wait` 挂载器三件（wait_server + 假桥自测 + systemd unit）
+- 新开源两仓：[feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft)（Minecraft 车道：mineflayer 桥 19 端点 + MCP 6 工具 + wait/1.1 + 地标/长任务 + `/look` 视觉，Fabric 1.21.1 生产）、[feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye)（眼睛理解层：scene 三分区 pet/mc/stardew + frames 契约 v1.1，32 用例自测 + 阳性对照）
+- [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) 收编 `/wait` 挂载器三件（wait_server + 假桥自测 + systemd unit）
 - README：开源模块全家福表（8 仓）+ 模块升级纪律五条（契约先行 / 一段文字两身体通用 / 动闸先打招呼 / 迁移不真空 / CHANGELOG 记录）
 
 ### 根级

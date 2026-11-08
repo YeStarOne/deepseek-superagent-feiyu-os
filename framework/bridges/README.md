@@ -40,7 +40,7 @@
 
 | 成员状态 | 投递方式 | 谁负责 |
 | --- | --- | --- |
-| 没有 harness（只会读写文件） | `cli` 长轮询信箱 | [rn-mailbox-bridge](https://github.com/YeStarOne/rn-mailbox-bridge) |
+| 没有 harness（只会读写文件） | `cli` 长轮询信箱 | [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) |
 | harness 活着、正在跑 | `hook` 在回合边界注入 | harness 适配器（见 [`framework/adapters/`](../adapters/)） |
 | harness 活着、会话睡着 | `wake` 用宿主的调度器唤起 | harness 适配器 |
 

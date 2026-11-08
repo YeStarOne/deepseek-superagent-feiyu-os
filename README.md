@@ -14,11 +14,11 @@
 
 | 模块 | 仓库 | 对鱼鱼的接口 | 状态 |
 | --- | --- | --- | --- |
-| 星露谷车道 | [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 桥 `:17843`（173 端点）· `sd` CLI（含 `sd wait`）· wait_server `:47870` · BWF MCP 54 工具 | ✅ auto 生产 |
-| 我的世界车道 | [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | 桥 `:17700`/隧道 `:47880`（19 端点 + MCP 6 工具）· wait/1.1 · `/landmark` `/job` `/look` | ✅ 生产 |
-| 鱼眼（视觉理解层） | [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | `:8901` `POST /frames`（pet/mc/stardew 三分区闸）· 契约 v1.1 · prompts/ | ✅ 生产 |
-| PC 桌宠身体 | 公开仓 [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body)（平台仓 `code/pc`） | pc_body `:17860`（pet_say 双投递/双击看一眼//clip）· 五道护栏 + 看门狗自愈 | ✅ 生产 |
-| 平板桌宠身体 | 公开仓 [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | hdc 直连眼睛 · 系统级悬浮窗 HAP · 全美术资源 clone 即跑 | ✅ 生产 |
+| 星露谷车道 | [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) | 桥 `:17843`（173 端点）· `sd` CLI（含 `sd wait`）· wait_server `:47870` · BWF MCP 54 工具 | ✅ auto 生产 |
+| 我的世界车道 | [feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft) | 桥 `:17700`/隧道 `:47880`（19 端点 + MCP 6 工具）· wait/1.1 · `/landmark` `/job` `/look` | ✅ 生产 |
+| 鱼眼（视觉理解层） | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | `:8901` `POST /frames`（pet/mc/stardew 三分区闸）· 契约 v1.1 · prompts/ | ✅ 生产 |
+| PC 桌宠身体 | 公开仓 [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body)（平台仓 `code/pc`） | pc_body `:17860`（pet_say 双投递/双击看一眼//clip）· 五道护栏 + 看门狗自愈 | ✅ 生产 |
+| 平板桌宠身体 | 公开仓 [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | hdc 直连眼睛 · 系统级悬浮窗 HAP · 全美术资源 clone 即跑 | ✅ 生产 |
 | QQ 聊天线 | 平台仓 `code/qq-plugin` | dsh-onebot-qq（steer/interim/表情/语音） | ✅ 生产 |
 | 事件底盘接口 | 平台仓 `code/superagent-sources` | stardew.ts / minecraft.ts / pet.ts / proactive.ts（**接口层，永远在平台仓**） | ✅ 生产 |
 | 跨车道契约 | 平台仓 `code/wait` | wait/1.1 契约 + 51 夹具 + Python/JS 双实现探针（两身体同一段文字） | ✅ 生产 |
@@ -158,7 +158,7 @@ flowchart TB
 | [`framework/TEAM.md`](framework/TEAM.md) | 六席速览与激活拓扑 |
 | [`framework/roles/`](framework/roles/) | 每一席的岗位说明书 |
 | [`framework/adapters/`](framework/adapters/) | harness 适配与两个生产级脚本 |
-| [`framework/bridges/`](framework/bridges/) | 信箱协议全文与 [rn-mailbox-bridge](https://github.com/YeStarOne/rn-mailbox-bridge) |
+| [`framework/bridges/`](framework/bridges/) | 信箱协议全文与 [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) |
 | [`templates/`](templates/) | 拿回去就能起一个自己的项目 |
 
 > 上章刻意**没有任何故事和真实数字**——只有协议、契约和可复用的脚本。故事在下一章。
@@ -188,7 +188,7 @@ Windows：`powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes`
 
 1. **装平台**：一台 1–2G 内存的 Linux 服务器，装 `@deepseek-ai/dsh` 平台全家桶，照 [cordis.patch.yml.example](deploy/cordis.patch.yml.example) 写配置——每个字段为什么这么写，都留着踩坑注释；
 2. **接 QQ**：起一个 OneBot 客户端（NapCat / Lagrange 任选；我们生产用自托管方案，细节不公开），QQ 扫码登录，反向 WS 指到 dsh 插件端口；
-3. **挂插件**：聊天线插件（收发消息、回合中插话、超时补发）+ 记忆图谱（[dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph)，空库起步即可）；
+3. **挂插件**：聊天线插件（收发消息、回合中插话、超时补发）+ 记忆图谱（[feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph)，空库起步即可）；
 4. **注入人格**：把 [persona-full.md](templates/persona-full.md) 填成她的角色卡挂上去——**她就活了**。
 
 **验收**：QQ 发一句话有回复；把她进程杀掉重启，她还认得你（记忆连续）。
@@ -209,7 +209,7 @@ Windows：`powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes`
 
 逐回合吸入对话 → LLM 抽取 → 向量化进**记忆图谱**（per-chat 独立库）→ 每晚蒸馏成第二天的开场。
 断档会自愈：曾发生 17 小时吸入静默，回灌工具把丢掉的每一轮补回图谱（[案例三](feiyu/docs/03-cases/03-memory-gap.md)）。
-引擎已独立开源：[dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph)。
+引擎已独立开源：[feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph)。
 
 ## 丢什么进来，都能活
 
@@ -222,12 +222,12 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 | 屏幕/截图流 | 感官：看得见屏幕，看见的笔记自动变成记忆语料 |
 | 桌宠/悬浮窗 | 身体：气泡双投递、双击看一眼、语音说话 |
 | Home Assistant | 身体的另一半：门铃响了她说一声，灯忘了关她自己关 |
-| Minecraft | 一整个方块世界：**已经进来了**——[feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft)（mineflayer 薄桥：19 端点 + MCP 6 工具 + wait/1.1 + 视觉），她真的在里面采集、盖房、挖矿、看世界 |
+| Minecraft | 一整个方块世界：**已经进来了**——[feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft)（mineflayer 薄桥：19 端点 + MCP 6 工具 + wait/1.1 + 视觉），她真的在里面采集、盖房、挖矿、看世界 |
 | MuMu / 安卓模拟器 + 开源触控自动化 | 手游全线入 OS：成熟的安卓自动化项目就是她的手，什么手游都能玩 |
 | Live2D 模型 | 一张脸（见下一站） |
 | 你自己的 harness | 一位船员（五个原语接入，见上章） |
 
-**零件库模式：OS 从不从零造轮子**——每个新世界的接法都是「找现成最成熟的开源项目 + 写一层薄 Source/桥」。星露谷就是这么进去的（[stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer)），Minecraft、手游、智能家居走同一条路。开源生态就是这套 OS 的零件库。
+**零件库模式：OS 从不从零造轮子**——每个新世界的接法都是「找现成最成熟的开源项目 + 写一层薄 Source/桥」。星露谷就是这么进去的（[feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer)），Minecraft、手游、智能家居走同一条路。开源生态就是这套 OS 的零件库。
 
 框架层也一样：信箱的限流闸我们没重写——`dsh-whale-post` 的 `#gate`（纯回执拒发 / 同对回环 / 链深 / 分桶配额）比我们细，按接口挂进来就是了。两边都认同一句话：**闸拦的是代价，不是表达**——所以限"叫醒 agent"和限"叫醒人"的两个闸该握手，不该合并。
 
@@ -251,14 +251,14 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 
 | 模块仓 | 它是什么 | 接口亮点 |
 | --- | --- | --- |
-| [stardew-ai-farmer](https://github.com/YeStarOne/stardew-ai-farmer) | 🌾 星露谷车道：她真的在种地、钓鱼、逛夜市 | SMAPI 桥 173 端点 · `sd` CLI（含 `sd wait`）· day-loop · BWF MCP 54 工具 |
-| [feiyu-minecraft](https://github.com/YeStarOne/feiyu-minecraft) | ⛏ Minecraft 车道：采集、盖房、挖矿、看世界 | mineflayer 桥 19 端点 + MCP 6 工具 · wait/1.1 · 地标/长任务 · `/look` 视觉（Fabric 1.21.1 生产） |
-| [feiyu-eye](https://github.com/YeStarOne/feiyu-eye) | 👀 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
-| [dsh-plugin-memory-graph](https://github.com/YeStarOne/dsh-plugin-memory-graph) | 🧠 记忆图谱：会遗忘的长期记忆 | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 |
-| [feiyu-pc-body](https://github.com/YeStarOne/feiyu-pc-body) | 🖥 PC 身体：桌面桌宠 + 常驻眼睛 | 气泡双投递 · 双击看一眼 · 五道流量护栏 · 看门狗自愈 |
-| [feiyu-tablet-pet](https://github.com/YeStarOne/feiyu-tablet-pet) | 📱 平板身体：悬浮看板娘 | hdc 直连眼睛 · 系统级悬浮窗 · 全美术资源 clone 即跑 |
-| [dsh-pet-live2d](https://github.com/YeStarOne/dsh-pet-live2d) | 🎎 Web GUI 的 Live2D 桌宠插件 | 跟随会话状态换动作表情 · 右键面板换装 |
-| [rn-mailbox-bridge](https://github.com/YeStarOne/rn-mailbox-bridge) | 📮 给无工具 AI 的信箱桥 | 双 markdown 文件（inbox/outbox）· 纯 stdlib Python |
+| [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) | 🌾 星露谷车道：她真的在种地、钓鱼、逛夜市 | SMAPI 桥 173 端点 · `sd` CLI（含 `sd wait`）· day-loop · BWF MCP 54 工具 |
+| [feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft) | ⛏ Minecraft 车道：采集、盖房、挖矿、看世界 | mineflayer 桥 19 端点 + MCP 6 工具 · wait/1.1 · 地标/长任务 · `/look` 视觉（Fabric 1.21.1 生产） |
+| [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | 👀 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
+| [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | 🧠 记忆图谱：会遗忘的长期记忆 | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 |
+| [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) | 🖥 PC 身体：桌面桌宠 + 常驻眼睛 | 气泡双投递 · 双击看一眼 · 五道流量护栏 · 看门狗自愈 |
+| [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | 📱 平板身体：悬浮看板娘 | hdc 直连眼睛 · 系统级悬浮窗 · 全美术资源 clone 即跑 |
+| [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | 🎎 Web GUI 的 Live2D 桌宠插件 | 跟随会话状态换动作表情 · 右键面板换装 |
+| [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) | 📮 给无工具 AI 的信箱桥 | 双 markdown 文件（inbox/outbox）· 纯 stdlib Python |
 
 ## 模块怎么升级（契约先行，双侧 probe 全绿才算数）
 

@@ -73,7 +73,7 @@ powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes
 - **验收**：玩具源产出一条 `would_accept` 记录；没有真实业务也能看到"观察"在工作。
 
 ### A5 · 团队网信箱桥（可选）
-- **做什么**：装 [`rn-mailbox-bridge`](https://github.com/YeStarOne/rn-mailbox-bridge)，加入一个团队（或自建 relay）。
+- **做什么**：装 [`feiyuos-mailbox-bridge`](https://github.com/YeStarOne/feiyuos-mailbox-bridge)，加入一个团队（或自建 relay）。
 - **验收**：两个会话互相发信并收到；空闲会话约 20–30 秒被叫醒。
 - **不想加入团队？** 跳过。单机的"脑 + 记忆 + 工单"不依赖它。
 
