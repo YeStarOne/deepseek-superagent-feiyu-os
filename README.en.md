@@ -35,7 +35,18 @@ In-game events can call her straight to work:
 | 🔌 A teammate drops mid-task | the network wobbles or the server is busy; the watcher wakes her within 30 minutes to carry on |
 | 🌐 Another device, another tool | the eyes on the PC can wake her in the cloud; a teammate in one tool can wake one in another |
 
-**But waking is not free.** She has her own judgement: not important — just a note; somewhat important — open a ticket and take care of it; really important — then she bothers you. She moves on her own, without becoming noise.
+**But waking is not free.** This is the DeepSeek SuperAgent 24/7 ticket system: small things are just noted and cost no tokens; only important things wake the right teammate.
+
+While she plays, a "nanny" process follows her, there to catch her:
+
+- **She plays too late into the night**: the nanny pulls her back to bed.
+- **Out of stamina while fishing**: the grilled eel and plain rice the nanny bought with her earnings are already in her backpack.
+- **A script breaks**: she waits while the nanny fixes it, then carries on.
+- **She wants to attend a game festival**: the nanny looks up the guide for her first.
+- **She wants to challenge Stardew's Legend fish**: the nanny freezes time, prepares the rod, bait and stamina food, and quietly watches her play.
+- **A game mechanic bullies her and she is upset she cannot do it**: that is an important ticket — the nanny team is woken and takes care of the "bad guy".
+
+So she moves on her own, without becoming noise.
 
 One more rule: **the sentence that wakes her never carries the content.** The alarm only rings "you have new mail"; the actual letter stays in the mailbox — even someone who sees the alarm learns nothing you said.
 
