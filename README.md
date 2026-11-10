@@ -305,6 +305,7 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | 👀 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
 | [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | 🧠 记忆图谱：会遗忘的长期记忆 | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 |
 | [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) | 🖥 PC 身体：桌面桌宠 + 常驻眼睛 | 气泡双投递 · 双击看一眼 · 五道流量护栏 · 看门狗自愈 |
+| [feiyuos-image](https://github.com/YeStarOne/feiyuos-image) | 🎨 生图车道：一句话出一张能直接发的图 | coco 基线（SDXL + 4 LoRA 链）· MCP `gen_image` 18082 · 非 R18 双层闸 + 真人拒单 · 洗图硬闸（PNG 的 tEXt = 明文提示词）· 模型/工作流/提示词可复现 |
 | [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | 📱 平板身体：悬浮看板娘 | hdc 直连眼睛 · 系统级悬浮窗 · 全美术资源 clone 即跑 |
 | [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | 🎎 Web GUI 的 Live2D 桌宠插件 | 跟随会话状态换动作表情 · 右键面板换装 |
 | [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) | 📮 给无工具 AI 的信箱桥 | 双 markdown 文件（inbox/outbox）· 纯 stdlib Python |

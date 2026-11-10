@@ -2,6 +2,17 @@
 
 格式参考 Keep a Changelog；版本号语义化。
 
+## 0.2.1 · 2026-11-10
+
+新增一条能力车道（不是游戏车道，是「出图」）：一句话进，一张能直接发出去的图出。
+
+### feiyu/（大肥鱼项目，传播向）
+- 新开源一仓：[feiyuos-image](https://github.com/YeStarOne/feiyuos-image)（生图车道：coco 基线 = SDXL 底模 + 4 条 LoRA 链 + 极短平铺正向；MCP `gen_image` 18082；非 R18 双层闸 + 真人拒单 + 洗图硬闸；底模/LoRA 的 model·version id 与 sha256、可 `POST /prompt` 的 19 节点工作流、非 R18 提示词手册、示例图连同逐字参数）
+- 全家福表补第 9 仓；运行时 MCP 代码仍在 [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body)（`server/feiyu_image_mcp.py`），新仓只放可复现的画风与提示词件，不做代码双份
+
+### 根级
+- README 中英同步：全家福表加 `feiyuos-image` 一行
+
 ## 0.2.0 · 2026-11-08
 
 仓库分层落地：一个游戏一个仓，可单独安装。
