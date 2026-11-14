@@ -2,7 +2,7 @@
 
 > **一条数字生命，和养她的那支 AI 团队——整套底座，开源。**
 
-![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-4·全部生产数字-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·可插拔-purple)
+![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-5·全部生产数字-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·可插拔-purple)
 
 [English](README.en.md) · 中文
 

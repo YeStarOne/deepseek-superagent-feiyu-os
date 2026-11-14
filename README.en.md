@@ -2,7 +2,7 @@
 
 > **One digital life, and the AI team that raises her — the whole stack, open source.**
 
-![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-4·production_numbers-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·pluggable-purple)
+![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-5·production_numbers-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·pluggable-purple)
 
 中文是主语言 → [README.md](README.md)
 
