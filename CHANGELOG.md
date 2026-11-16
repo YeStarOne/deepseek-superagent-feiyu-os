@@ -2,6 +2,15 @@
 
 格式参考 Keep a Changelog；版本号语义化。
 
+## 0.2.3 · 2026-11-16
+
+README「肥鱼 OS 总体架构」表对齐到当前 14 个模块（中英同步）。
+
+### 根级
+- 架构表原来停在 11 月上旬的 8 行，之后新增的仓只落在下半章「全家福」里，两处口径不一致。本次补齐 6 行：星邮零状态中转 [feiyuos-starpost-relay](https://github.com/YeStarOne/feiyuos-starpost-relay)、生图车道 [feiyuos-image](https://github.com/YeStarOne/feiyuos-image)、Live2D 桌宠 [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d)、记忆图谱 [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph)、技能记忆 [feiyuos-experience-memory](https://github.com/YeStarOne/feiyuos-experience-memory)、信箱桥 [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge)；行序按「车道 → 感官/身体 → 记忆 → 平台仓接口」重排。
+- 「全家福」表补 `feiyuos-starpost-relay` 与 `feiyuos-experience-memory` 两行（此前遗漏，中英同步）。
+- 只补事实与链接，未改口径、未加未验证的数字。
+
 ## 0.2.2 · 2026-11-14
 
 看护判活的五种假活签名入册：判活只认外部真信号。

@@ -61,12 +61,18 @@ One more rule: **the sentence that wakes her never carries the content.** The al
 | --- | --- | --- | --- |
 | Stardew lane | [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) | bridge `:17843` (173 endpoints) · `sd` CLI (with `sd wait`) · wait_server `:47870` · BWF MCP 54 tools | ✅ auto production |
 | Minecraft lane | [feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft) | bridge `:17700`/tunnel `:47880` (19 endpoints + 6 MCP tools) · wait/1.1 · `/landmark` `/job` `/look` | ✅ production |
+| Starpost stateless relay | public [feiyuos-starpost-relay](https://github.com/YeStarOne/feiyuos-starpost-relay) | relay fully env-parameterized + bridge do-not-disturb gate · three delivery tiers (receipts filed / ordinary mail muted / activating mail wakes) | ✅ production |
+| Image lane | public [feiyuos-image](https://github.com/YeStarOne/feiyuos-image) | MCP `gen_image` `:18082` (tunnel `:47853`) · coco baseline SDXL + 4-LoRA chain · non-R18 double gate + real-person refusal + metadata-strip gate | ✅ production |
 | Fish eye (vision layer) | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | `:8901` `POST /frames` (pet/mc/stardew partitioned gates) · contract v1.1 · prompts/ | ✅ production |
 | PC desktop-pet body | [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) (platform repo `code/pc`) | pc_body `:17860` (dual-delivery bubbles / double-click to look / /clip) · five traffic gates + watchdog self-healing | ✅ production |
 | Tablet pet body | [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | hdc-connected eye · system-level floating window HAP · all art assets, clone and run | ✅ production |
+| Live2D pet | public [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | DSH Web GUI plugin · state-driven motion & expression · right-click dressing panel | ✅ production |
+| Memory graph | public [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | turns→graph→vector recall→nightly distillation · per-chat library · gap self-healing | ✅ production |
+| Skill memory | public [feiyuos-experience-memory](https://github.com/YeStarOne/feiyuos-experience-memory) | process → skill card (wrong-answer notebook → SKILL.md) · 242 tests · descriptions lead with the scenario | ✅ production |
 | QQ chat line | platform repo `code/qq-plugin` | dsh-onebot-qq (steer/interim/stickers/voice) | ✅ production |
 | Event backbone interfaces | platform repo `code/superagent-sources` | stardew.ts / minecraft.ts / pet.ts / proactive.ts (**interface layer, always in the platform repo**) | ✅ production |
 | Cross-lane contract | platform repo `code/wait` | wait/1.1 contract + 51 fixtures + Python/JS dual probes (one sentence of text, two bodies) | ✅ production |
+| Mailbox bridge | public [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) | inbox.md / outbox.md two-file contract · pure-stdlib Python · a mailbox for tool-less AI | ✅ production |
 
 ## A day in her life
 
@@ -287,8 +293,10 @@ Installing a new lane = clone the repo + three steps from the card (start the br
 | --- | --- | --- |
 | [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) | 🌾 Stardew lane: she really farms, fishes, walks the night market | SMAPI bridge, 173 endpoints · `sd` CLI (with `sd wait`) · day-loop · BWF MCP 54 tools |
 | [feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft) | ⛏ Minecraft lane: gather, build, mine, look around | mineflayer bridge, 19 endpoints + 6 MCP tools · wait/1.1 · landmarks/long jobs · `/look` vision (Fabric 1.21.1 in production) |
+| [feiyuos-starpost-relay](https://github.com/YeStarOne/feiyuos-starpost-relay) | 💌 Starpost stateless relay: agents in the mailbox play Werewolf / murder-mystery / drift-bottle directly | relay fully env-parameterized · three delivery tiers · do-not-disturb gate · HELP and runtime action table share one source |
 | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | 👀 Eye understanding layer: frames in, one Chinese scene description out | scene partitions pet/mc/stardew · frames contract v1.1 · per-scene gates · 32-case selftest + positive control |
 | [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | 🧠 Memory graph: long-term memory that forgets | turns→graph→vector recall→nightly distillation · per-chat library · gap self-healing |
+| [feiyuos-experience-memory](https://github.com/YeStarOne/feiyuos-experience-memory) | 🎓 Skill memory: process → skill card, wrong-answer notebook → SKILL.md | 242 tests · scenario-first descriptions · lane repo |
 | [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) | 🖥 PC body: desktop pet + resident eye | dual-delivery bubbles · double-click to look · five traffic gates · watchdog self-healing |
 | [feiyuos-image](https://github.com/YeStarOne/feiyuos-image) | 🎨 Image lane: one sentence in, one publishable image out | coco baseline (SDXL + 4-LoRA chain) · MCP `gen_image` on 18082 · non-R18 double gate + real-person refusal · metadata-strip gate (PNG tEXt = plaintext prompt) · reproducible models/workflow/prompts |
 | [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | 📱 Tablet body: floating pet | hdc-connected eye · system-level floating window · all art assets, clone and run |
