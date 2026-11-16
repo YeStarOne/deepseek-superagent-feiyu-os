@@ -55,7 +55,7 @@
 
 ## 肥鱼 OS 总体架构
 
-**平台仓 + 车道仓两层**：平台仓（私有开发仓）只装"底盘与接口"（鱼脑、QQ 线、事件底盘接口、PC 身体、出海、跨车道契约）；每个游戏一条**车道仓**，可单独安装，README 顶部带"接入卡"（桥地址 → API 一览 → wait 契约版本 → superagent source 名 → config 键）。装一个新车道 = 克隆 + 三步（起桥 → 打隧道口 → 平台仓 source 指向它）。**本仓是这套架构的开源橱窗与模板包。**
+**平台仓 + 车道仓两层**：平台仓（私有开发仓）只装"底盘与接口"（鱼脑、QQ 线、事件底盘接口、PC 身体、出海、跨车道契约）；每个世界/身体一条**车道仓**，可单独安装，README 顶部带"接入卡"（桥地址 → API 一览 → wait 契约版本 → superagent source 名 → config 键）。装一个新车道 = 克隆 + 三步（起桥 → 打隧道口 → 平台仓 source 指向它）。**本仓是这套架构的开源橱窗与模板包。**
 
 | 模块 | 仓库 | 对鱼鱼的接口 | 状态 |
 | --- | --- | --- | --- |
@@ -66,7 +66,6 @@
 | 鱼眼（视觉理解层） | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | `:8901` `POST /frames`（pet/mc/stardew 三分区闸）· 契约 v1.1 · prompts/ | ✅ 生产 |
 | PC 桌宠身体 | 公开仓 [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body)（平台仓 `code/pc`） | pc_body `:17860`（pet_say 双投递/双击看一眼//clip）· 五道护栏 + 看门狗自愈 | ✅ 生产 |
 | 平板桌宠身体 | 公开仓 [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | hdc 直连眼睛 · 系统级悬浮窗 HAP · 全美术资源 clone 即跑 | ✅ 生产 |
-| Live2D 桌宠 | 公开仓 [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | DSH Web GUI 插件 · 跟随会话状态换动作表情 · 右键面板换装 | ✅ 生产 |
 | 记忆图谱 | 公开仓 [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 | ✅ 生产 |
 | 技能记忆 | 公开仓 [feiyuos-experience-memory](https://github.com/YeStarOne/feiyuos-experience-memory) | 行为过程 → 技能卡（错题本 → SKILL.md）· 242 tests · 卡片描述场景在前 | ✅ 生产 |
 | QQ 聊天线 | 平台仓 `code/qq-plugin` | dsh-onebot-qq（steer/interim/表情/语音） | ✅ 生产 |
@@ -315,7 +314,7 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 | [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) | 🖥 PC 身体：桌面桌宠 + 常驻眼睛 | 气泡双投递 · 双击看一眼 · 五道流量护栏 · 看门狗自愈 |
 | [feiyuos-image](https://github.com/YeStarOne/feiyuos-image) | 🎨 生图车道：一句话出一张能直接发的图 | coco 基线（SDXL + 4 LoRA 链）· MCP `gen_image` 18082 · 非 R18 双层闸 + 真人拒单 · 洗图硬闸（PNG 的 tEXt = 明文提示词）· 模型/工作流/提示词可复现 |
 | [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | 📱 平板身体：悬浮看板娘 | hdc 直连眼睛 · 系统级悬浮窗 · 全美术资源 clone 即跑 |
-| [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | 🎎 Web GUI 的 Live2D 桌宠插件 | 跟随会话状态换动作表情 · 右键面板换装 |
+| [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | 🎎 Web GUI 的 Live2D 桌宠插件 | 跟随会话状态换动作表情 · 右键面板换装 · **尚未接入生产线** |
 | [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) | 📮 给无工具 AI 的信箱桥 | 双 markdown 文件（inbox/outbox）· 纯 stdlib Python |
 
 ## 模块怎么升级（契约先行，双侧 probe 全绿才算数）

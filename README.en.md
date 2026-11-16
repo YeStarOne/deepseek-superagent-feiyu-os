@@ -55,7 +55,7 @@ One more rule: **the sentence that wakes her never carries the content.** The al
 
 ## Feiyu OS architecture
 
-**Two layers: platform repo + lane repos.** The platform repo (private dev repo) carries only the "chassis and interfaces" — brain & persona, the QQ line, event-backbone source interfaces, PC body, outbound DM, cross-lane contracts. Each game gets its own **lane repo**, installable standalone, whose README opens with an adapter card (bridge address → API map → wait contract version → superagent source name → config keys). Installing a new lane = clone + three steps (start the bridge → open the tunnel port → point the platform source at it). **This repo is the open-source showcase and template pack for that architecture.**
+**Two layers: platform repo + lane repos.** The platform repo (private dev repo) carries only the "chassis and interfaces" — brain & persona, the QQ line, event-backbone source interfaces, PC body, outbound DM, cross-lane contracts. Each world or body gets its own **lane repo**, installable standalone, whose README opens with an adapter card (bridge address → API map → wait contract version → superagent source name → config keys). Installing a new lane = clone + three steps (start the bridge → open the tunnel port → point the platform source at it). **This repo is the open-source showcase and template pack for that architecture.**
 
 | Module | Repo | Interface for the fish | Status |
 | --- | --- | --- | --- |
@@ -66,7 +66,6 @@ One more rule: **the sentence that wakes her never carries the content.** The al
 | Fish eye (vision layer) | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | `:8901` `POST /frames` (pet/mc/stardew partitioned gates) · contract v1.1 · prompts/ | ✅ production |
 | PC desktop-pet body | [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) (platform repo `code/pc`) | pc_body `:17860` (dual-delivery bubbles / double-click to look / /clip) · five traffic gates + watchdog self-healing | ✅ production |
 | Tablet pet body | [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | hdc-connected eye · system-level floating window HAP · all art assets, clone and run | ✅ production |
-| Live2D pet | public [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | DSH Web GUI plugin · state-driven motion & expression · right-click dressing panel | ✅ production |
 | Memory graph | public [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | turns→graph→vector recall→nightly distillation · per-chat library · gap self-healing | ✅ production |
 | Skill memory | public [feiyuos-experience-memory](https://github.com/YeStarOne/feiyuos-experience-memory) | process → skill card (wrong-answer notebook → SKILL.md) · 242 tests · descriptions lead with the scenario | ✅ production |
 | QQ chat line | platform repo `code/qq-plugin` | dsh-onebot-qq (steer/interim/stickers/voice) | ✅ production |
@@ -300,7 +299,7 @@ Installing a new lane = clone the repo + three steps from the card (start the br
 | [feiyuos-pc-body](https://github.com/YeStarOne/feiyuos-pc-body) | 🖥 PC body: desktop pet + resident eye | dual-delivery bubbles · double-click to look · five traffic gates · watchdog self-healing |
 | [feiyuos-image](https://github.com/YeStarOne/feiyuos-image) | 🎨 Image lane: one sentence in, one publishable image out | coco baseline (SDXL + 4-LoRA chain) · MCP `gen_image` on 18082 · non-R18 double gate + real-person refusal · metadata-strip gate (PNG tEXt = plaintext prompt) · reproducible models/workflow/prompts |
 | [feiyuos-tablet-pet](https://github.com/YeStarOne/feiyuos-tablet-pet) | 📱 Tablet body: floating pet | hdc-connected eye · system-level floating window · all art assets, clone and run |
-| [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | 🎎 Live2D pet plugin for the DSH Web GUI | state-driven motion & expression · right-click dressing panel |
+| [feiyuos-pet-live2d](https://github.com/YeStarOne/feiyuos-pet-live2d) | 🎎 Live2D pet plugin for the DSH Web GUI | state-driven motion & expression · right-click dressing panel · **not wired into the live system yet** |
 | [feiyuos-mailbox-bridge](https://github.com/YeStarOne/feiyuos-mailbox-bridge) | 📮 Mailbox for tool-less AI | two markdown files (inbox/outbox) · pure-stdlib Python |
 
 ## How modules upgrade (contract first; both probes green or it doesn't count)
