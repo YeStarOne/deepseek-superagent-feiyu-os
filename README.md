@@ -2,7 +2,7 @@
 
 > **一条数字生命，和养她的那支 AI 团队——整套底座，开源。**
 
-![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-5·全部生产数字-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·可插拔-purple)
+![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-6·全部生产数字-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·可插拔-purple)
 
 [English](README.en.md) · 中文
 
@@ -248,7 +248,7 @@ Windows：`powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes`
 **验收**：QQ 发一句话有回复；把她进程杀掉重启，她还认得你（记忆连续）。
 **之后**：常驻用 [systemd 模板](deploy/systemd/)，起停/体检/回滚见 [runbook](feiyu/docs/05-runbook.md)；要工单线、眼睛、出海 DM，按 04-deploy 第 06–10 步继续走。
 
-## 四个真实案例
+## 六个真实案例
 
 数字都可核，写法统一：问题 → 做法 → 结果 → 证据 → 教训。
 
@@ -256,6 +256,8 @@ Windows：`powershell -ExecutionPolicy Bypass -File install\local\seed.ps1 -Yes`
 2. [观察先于自动](feiyu/docs/03-cases/02-observe-before-auto.md)：4/4 窗口对账 → 抓出 100% 假阳性 → 收紧规则 → 切闸留痕可回滚。
 3. [17 小时记忆断档](feiyu/docs/03-cases/03-memory-gap.md)：日志全绿、功能全哑；文件改对了不等于进程里跑对了。
 4. [动作没生效但日志没有 error](feiyu/docs/03-cases/04-deploy-silent-failure.md)：部署三关，校验必须落在被消费的那一份上。
+5. [看护判活五连败](feiyu/docs/03-cases/05-false-alive.md)：心跳、端口、状态文件都会撒谎——判活只认外部真信号。
+6. [两段式升级 27 秒停机窗](feiyu/docs/03-cases/06-two-phase-upgrade.md)：白天把一切"会失败"的事做完验完，夜窗只做本地原子动作——窗里只装得下确定性。
 
 **切闸首日速览**（2026-11-07）：5 张真工单 · 触发→派发 ≤7s · 报告出海 4/4 送达 · 24h 平台缓存命中率 96.4% · 眼睛仅占平台 token 1.0%。
 

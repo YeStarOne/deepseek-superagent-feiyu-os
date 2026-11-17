@@ -2,7 +2,7 @@
 
 > **One digital life, and the AI team that raises her — the whole stack, open source.**
 
-![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-5·production_numbers-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·pluggable-purple)
+![License](https://img.shields.io/badge/code-MIT-blue) ![Docs](https://img.shields.io/badge/docs-CC--BY--4.0-green) ![cases](https://img.shields.io/badge/real_cases-6·production_numbers-orange) ![night_shift](https://img.shields.io/badge/night_shift-33_PRs_merged-red) ![harness](https://img.shields.io/badge/harness-dsh·ZCode·pluggable-purple)
 
 中文是主语言 → [README.md](README.md)
 
@@ -243,7 +243,7 @@ Trying her out locally is one thing; a fish that actually lives in your life —
 **Acceptance**: send her a message on QQ and get a reply; kill her process, start it again, and she still knows you (continuous memory).
 **After that**: keep it resident with the [systemd templates](deploy/systemd/); start/stop/doctor/rollback live in the [runbook](feiyu/docs/05-runbook.md); for the ticket line, eyes and outbound DMs, continue with steps 06–10 of 04-deploy.
 
-## Four real cases
+## Six real cases
 
 Same shape every time: problem → approach → result → evidence → lesson.
 
@@ -251,6 +251,8 @@ Same shape every time: problem → approach → result → evidence → lesson.
 2. [Observe before auto](feiyu/docs/03-cases/02-observe-before-auto.md): 4/4 reconciliation → a 100% false-positive class → tighter rules → a recorded, rollback-able switch.
 3. [A 17-hour memory gap](feiyu/docs/03-cases/03-memory-gap.md): every log green, every feature mute. Editing the file right is not running it right.
 4. [The action never took effect, and no error was logged](feiyu/docs/03-cases/04-deploy-silent-failure.md): three deployment gates; **verify the copy that is actually consumed**.
+5. [The watcher's five false-alive signatures](feiyu/docs/03-cases/05-false-alive.md): heartbeats, ports and state files all lie — liveness is only an external signal.
+6. [Two-phase upgrade, a 27-second downtime window](feiyu/docs/03-cases/06-two-phase-upgrade.md): during the day, do and verify everything that can fail; the window only holds local atomic actions — **the window only fits certainty**.
 
 **Switch-day snapshot** (2026-11-07): 5 real tickets · trigger→dispatch ≤7 s · reports delivered 4/4 · 24 h cache hit 96.4% · eyes cost 1.0% of platform tokens.
 
