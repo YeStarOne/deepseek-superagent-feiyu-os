@@ -61,6 +61,7 @@
 | --- | --- | --- | --- |
 | 星露谷车道 | [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) | 桥 `:17843`（173 端点）· `sd` CLI（含 `sd wait`）· wait_server `:47870` · BWF MCP 54 工具 | ✅ auto 生产 |
 | 我的世界车道 | [feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft) | 桥 `:17700`/隧道 `:47880`（19 端点 + MCP 6 工具）· wait/1.1 · `/landmark` `/job` `/look` | ✅ 生产 |
+| 鱼的世界车道 | 公开仓 [feiyuos-fishworld](https://github.com/YeStarOne/feiyuos-fishworld) | 远程 HTTPS：`/v1/notify` 事件流 → 两类指纹去重 → 唤醒会话 · `/v1/mcp` 伸手（ssh 隧道兜底）· 心跳 / 看她 / 守卫三件套 | ✅ 生产 |
 | 星邮零状态中转 | 公开仓 [feiyuos-starpost-relay](https://github.com/YeStarOne/feiyuos-starpost-relay) | relay 全 env 参数化 + bridge 免打扰闸 · 三层投递（回执落档 / 普通信静音 / 激活信叫醒） | ✅ 生产 |
 | 生图车道 | 公开仓 [feiyuos-image](https://github.com/YeStarOne/feiyuos-image) | MCP `gen_image` `:18082`（隧道 `:47853`）· coco 基线 SDXL + 4 LoRA 链 · 非 R18 双层闸 + 真人拒单 + 洗图硬闸 | ✅ 生产 |
 | 鱼眼（视觉理解层） | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | `:8901` `POST /frames`（pet/mc/stardew 三分区闸）· 契约 v1.1 · prompts/ | ✅ 生产 |
@@ -309,6 +310,7 @@ OS 不挑食——**任何成熟项目接进来，就长成一个系统模块**�
 | --- | --- | --- |
 | [feiyuos-stardew-ai-farmer](https://github.com/YeStarOne/feiyuos-stardew-ai-farmer) | 🌾 星露谷车道：她真的在种地、钓鱼、逛夜市 | SMAPI 桥 173 端点 · `sd` CLI（含 `sd wait`）· day-loop · BWF MCP 54 工具 |
 | [feiyuos-minecraft](https://github.com/YeStarOne/feiyuos-minecraft) | ⛏ Minecraft 车道：采集、盖房、挖矿、看世界 | mineflayer 桥 19 端点 + MCP 6 工具 · wait/1.1 · 地标/长任务 · `/look` 视觉（Fabric 1.21.1 生产） |
+| [feiyuos-fishworld](https://github.com/YeStarOne/feiyuos-fishworld) | 🐟 鱼的世界车道：另一座城里，她自己过日子、上班、串门 | `/v1/notify` 累计快照事件流 + 社交/工作两类去重 · `/v1/mcp` JSON-RPC 伸手 · 心跳 30s 轮询 / 8min 保活 / 定时激活 · 四层验收证据链 |
 | [feiyuos-starpost-relay](https://github.com/YeStarOne/feiyuos-starpost-relay) | 💌 星邮零状态中转：信箱里的 agent 直接玩狼人杀 / 剧本杀 / 漂流瓶 | relay 全 env 参数化 · 三层投递（回执落档 / 普通信静音 / 激活信叫醒）· 免打扰闸 · HELP 与运行时动作表同源 |
 | [feiyuos-eye](https://github.com/YeStarOne/feiyuos-eye) | 👀 眼睛理解层：截图进，一句中文场景描述出 | scene 三分区 pet/mc/stardew · frames 契约 v1.1 · 每场景独立闸 · 32 用例自测 + 阳性对照 |
 | [feiyuos-memory-graph](https://github.com/YeStarOne/feiyuos-memory-graph) | 🧠 记忆图谱：会遗忘的长期记忆 | 对话→图谱→向量召回→睡前蒸馏 · per-chat 独立库 · 断档自愈回灌 |
